@@ -4986,6 +4986,10 @@ h3[class*=__title] {
   gap: 0;
 }
 
+.store .about-store__content::webkit-details-marker {
+  display: none;
+}
+
 .store .about-store__img {
   position: initial;
   display: initial;
