@@ -1859,6 +1859,16 @@ summary::-webkit-details-marker {
   display: none;
 }
 
+summary {
+  list-style: none;
+}
+
+details > summary::marker {
+  display: none;
+  content: "";
+  /* Прощай, стрелочка, теперь ты здесь не нужна! */
+}
+
 .header {
   position: relative;
   background: #fff5f6;
