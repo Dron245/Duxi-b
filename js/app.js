@@ -22038,7 +22038,7 @@
                             slidesPerView: 2,
                             spaceBetween: 20
                         },
-                        1001: {
+                        1001.98: {
                             slidesPerView: 3,
                             spaceBetween: 20
                         }
@@ -22120,7 +22120,7 @@
                             slidesPerView: 2,
                             spaceBetween: 20
                         },
-                        1001: {
+                        1001.98: {
                             slidesPerView: 3,
                             spaceBetween: 20
                         }
@@ -22163,7 +22163,7 @@
                             slidesPerView: 2,
                             spaceBetween: 20
                         },
-                        1001: {
+                        1001.98: {
                             slidesPerView: 3,
                             spaceBetween: 20
                         }
@@ -28833,9 +28833,22 @@
                     targetElement.closest(`${id}`).classList.remove("popup_show");
                     targetElement.closest(`${id}`).setAttribute("aria-hidden", "false");
                 }
-                if (targetElement.closest(".menu__link") && targetElement.closest("header")) {
-                    targetElement.closest(".menu__item").classList.toggle("_menu__item-active");
-                    targetElement.closest(".menu__item").querySelector(".menu__sublist") ? targetElement.closest(".menu__item").querySelector(".menu__sublist").classList.toggle("_sub-menu-open") : null;
+                console.log(targetElement);
+                if (targetElement.closest(".menu__item") && targetElement.closest("header") && !targetElement.closest(".menu__item").classList.contains("_menu__item-active")) {
+                    const menuItemMobile = targetElement.closest(".menu__list").querySelectorAll(".menu__item");
+                    menuItemMobile.forEach((element => {
+                        element.classList.remove("_menu__item-active");
+                    }));
+                    const sublistMobile = targetElement.closest(".menu__list").querySelectorAll(".menu__sublist");
+                    sublistMobile.forEach((element => {
+                        element.classList.remove("_sub-menu-open");
+                    }));
+                    targetElement.closest(".menu__item").classList.add("_menu__item-active");
+                    targetElement.closest(".menu__item").querySelector(".menu__sublist") ? targetElement.closest(".menu__item").querySelector(".menu__sublist").classList.add("_sub-menu-open") : null;
+                } else if (targetElement.closest(".menu__item") && targetElement.closest("header") && targetElement.closest(".menu__item").classList.contains("_menu__item-active") && !targetElement.closest(".sublist-menu__link")) {
+                    console.log(3);
+                    targetElement.closest(".menu__item").classList.remove("_menu__item-active");
+                    targetElement.closest(".menu__item").querySelector(".menu__sublist").classList.remove("_sub-menu-open");
                 }
                 if (!targetElement.closest(".menсu__icon") && !targetElement.closest(".menu__body") && flag == true) flag = false; else if (!targetElement.closest(".menсu__icon") && !targetElement.closest(".menu__body") && flag == false) {
                     flag = true;
@@ -29372,7 +29385,7 @@
         }));
         document.addEventListener("DOMContentLoaded", (() => {
             const secondTabs = document.querySelector("#secondTabs");
-            if (window.innerWidth < 768 && secondTabs) {
+            if (window.innerWidth < 767.5 && secondTabs) {
                 const tabs01 = document.querySelector("#tabs01");
                 const tabs02 = document.querySelector("#tabs02");
                 tabs01 ? tabs01.classList.remove("_tab-active") : null;
@@ -29380,7 +29393,14 @@
                 tabs02 ? tabs02.classList.add("_tab-active") : null;
             }
             const breadcrumbs = document.querySelector(".breadcrumbs__list");
-            if (breadcrumbs) if (30 + breadcrumbs.clientWidth > window.innerWidth) breadcrumbs.classList.add("_align-right"); else breadcrumbs.classList.remove("_align-right");
+            if (breadcrumbs) {
+                console.log(breadcrumbs.clientWidth);
+                console.log(window.innerWidth);
+                if (30 + breadcrumbs.clientWidth > window.innerWidth) {
+                    breadcrumbs.classList.add("_align-right");
+                    breadcrumbs.parentElement.classList.add("_breadcrumbs-swipe");
+                }
+            }
             const searchMob = document.querySelector(".search-mob");
             const headerDropMobile = searchMob.querySelector(".dropmenu");
             headerDropMobile.style.top = `${searchMob.clientHeight}` + "px";
@@ -29546,7 +29566,7 @@
             const details = catalog.querySelectorAll("details");
             const spollersWrapper = catalog.querySelector("aside [data-spollers]");
             const summury = catalog.querySelectorAll(".filter__title-wrapper");
-            if (window.innerWidth < 1001) {
+            if (window.innerWidth < 1001.5) {
                 details.forEach((element => {
                     element.removeAttribute("data-open");
                 }));
