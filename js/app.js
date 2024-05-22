@@ -24338,7 +24338,7 @@
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: "5.0.36"
+            value: "5.0.33"
         }), Object.defineProperty(f, "defaults", {
             enumerable: !0,
             configurable: !0,
@@ -24449,25 +24449,25 @@
             d: 1,
             e: 0,
             f: 0
-        }, T = 1e5, M = 1e4, O = "mousemove", A = "drag", L = "content", z = "auto";
-        let R = null, k = null;
-        class I extends g {
+        }, T = 1e5, M = 1e4, O = "mousemove", A = "drag", L = "content";
+        let z = null, R = null;
+        class k extends g {
             get fits() {
                 return this.contentRect.width - this.contentRect.fitWidth < 1 && this.contentRect.height - this.contentRect.fitHeight < 1;
             }
             get isTouchDevice() {
-                return null === k && (k = window.matchMedia("(hover: none)").matches), k;
+                return null === R && (R = window.matchMedia("(hover: none)").matches), R;
             }
             get isMobile() {
-                return null === R && (R = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)), 
-                R;
+                return null === z && (z = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)), 
+                z;
             }
             get panMode() {
                 return this.options.panMode !== O || this.isTouchDevice ? A : O;
             }
             get panOnlyZoomed() {
                 const t = this.options.panOnlyZoomed;
-                return t === z ? this.isTouchDevice : t;
+                return "auto" === t ? this.isTouchDevice : t;
             }
             get isInfinite() {
                 return this.option("infinite");
@@ -24691,7 +24691,7 @@
                     writable: !0,
                     value: !1
                 }), !t) throw new Error("Container Element Not Found");
-                this.container = t, this.initContent(), this.attachPlugins(Object.assign(Object.assign({}, I.Plugins), i)), 
+                this.container = t, this.initContent(), this.attachPlugins(Object.assign(Object.assign({}, k.Plugins), i)), 
                 this.emit("attachPlugins"), this.emit("init");
                 const o = this.content;
                 if (o.addEventListener("load", this.onLoad), o.addEventListener("error", this.onError), 
@@ -25042,46 +25042,43 @@
                     innerWidth: u,
                     innerHeight: p
                 };
-                const f = parseFloat(o.dataset.width || "") || (t => {
+                let f = this.option("width") || "auto", g = this.option("height") || "auto";
+                "auto" === f && (f = parseFloat(o.dataset.width || "") || (t => {
                     let e = 0;
                     return e = t instanceof HTMLImageElement ? t.naturalWidth : t instanceof SVGElement ? t.width.baseVal.value : Math.max(t.offsetWidth, t.scrollWidth), 
                     e || 0;
-                })(o), g = parseFloat(o.dataset.height || "") || (t => {
+                })(o)), "auto" === g && (g = parseFloat(o.dataset.height || "") || (t => {
                     let e = 0;
                     return e = t instanceof HTMLImageElement ? t.naturalHeight : t instanceof SVGElement ? t.height.baseVal.value : Math.max(t.offsetHeight, t.scrollHeight), 
                     e || 0;
-                })(o);
-                let v = this.option("width", f) || z, b = this.option("height", g) || z;
-                const y = v === z, w = b === z;
-                "number" != typeof v && (v = f), "number" != typeof b && (b = g), y && (v = f * (b / g)), 
-                w && (b = g / (f / v));
-                let x = o.parentElement instanceof HTMLPictureElement ? o.parentElement : o;
-                this.option("transformParent") && (x = x.parentElement || x);
-                const E = x.getAttribute("style") || "";
-                x.style.setProperty("transform", "none", "important"), a && (x.style.width = "", 
-                x.style.height = ""), x.offsetHeight;
-                const S = o.getBoundingClientRect();
-                let P = S.width * n, C = S.height * n, T = P, M = C;
-                P = Math.min(P, v), C = Math.min(C, b), a ? ({width: P, height: C} = ((t, e, i, n) => {
-                    const s = i / t, o = n / e, a = Math.min(s, o);
-                    return {
-                        width: t *= a,
-                        height: e *= a
+                })(o));
+                let v = o.parentElement instanceof HTMLPictureElement ? o.parentElement : o;
+                this.option("transformParent") && (v = v.parentElement || v);
+                const b = v.getAttribute("style") || "";
+                v.style.setProperty("transform", "none", "important"), a && (v.style.width = "", 
+                v.style.height = ""), v.offsetHeight;
+                const y = o.getBoundingClientRect();
+                let w = y.width * n, x = y.height * n, E = 0, S = 0;
+                a && (Math.abs(f - w) > 1 || Math.abs(g - x) > 1) && ({width: w, height: x, top: E, left: S} = ((t, e, i, n) => {
+                    const s = i / n;
+                    return s > t / e ? (i = t, n = t / s) : (i = e * s, n = e), {
+                        width: i,
+                        height: n,
+                        top: .5 * (e - n),
+                        left: .5 * (t - i)
                     };
-                })(v, b, P, C)) : (P = Math.min(P, v), C = Math.min(C, b));
-                let O = .5 * (M - C), A = .5 * (T - P);
-                this.contentRect = Object.assign(Object.assign({}, this.contentRect), {
-                    top: S.top - r.top + O,
-                    bottom: r.bottom - S.bottom + O,
-                    left: S.left - r.left + A,
-                    right: r.right - S.right + A,
-                    fitWidth: P,
-                    fitHeight: C,
-                    width: P,
-                    height: C,
-                    fullWidth: v,
-                    fullHeight: b
-                }), x.style.cssText = E, a && (x.style.width = `${P}px`, x.style.height = `${C}px`), 
+                })(w, x, f, g)), this.contentRect = Object.assign(Object.assign({}, this.contentRect), {
+                    top: y.top - r.top + E,
+                    bottom: r.bottom - y.bottom + E,
+                    left: y.left - r.left + S,
+                    right: r.right - y.right + S,
+                    fitWidth: w,
+                    fitHeight: x,
+                    width: w,
+                    height: x,
+                    fullWidth: f,
+                    fullHeight: g
+                }), v.style.cssText = b, a && (v.style.width = `${w}px`, v.style.height = `${x}px`), 
                 this.setTransform(), !0 !== e && this.emit("refresh"), this.ignoreBounds || (t(this.targetScale) < t(this.minScale) ? this.zoomTo(this.minScale, {
                     friction: 0
                 }) : this.targetScale > this.maxScale ? this.zoomTo(this.maxScale, {
@@ -25120,7 +25117,7 @@
             }
             getBounds() {
                 const t = this.option("bounds");
-                return t !== z ? t : this.calculateBounds();
+                return "auto" !== t ? t : this.calculateBounds();
             }
             updateControls() {
                 const e = this, i = e.container, {panMode: n, contentRect: s, targetScale: a, minScale: r} = e;
@@ -25269,16 +25266,16 @@
             iterateZoom(t) {
                 this.zoomTo("next", t);
             }
-            zoomTo(t = 1, {friction: e = z, originX: i = z, originY: n = z, event: s} = {}) {
+            zoomTo(t = 1, {friction: e = "auto", originX: i = "auto", originY: n = "auto", event: s} = {}) {
                 if (this.isContentLoading || this.state === m.Destroy) return;
                 const {targetScale: o, fullScale: a, maxScale: r, coverScale: l} = this;
-                if (this.stop(), this.panMode === O && (s = this.pmme || s), s || i === z || n === z) {
+                if (this.stop(), this.panMode === O && (s = this.pmme || s), s || "auto" === i || "auto" === n) {
                     const t = this.content.getBoundingClientRect(), e = this.container.getBoundingClientRect(), o = s ? s.clientX : e.left + .5 * e.width, a = s ? s.clientY : e.top + .5 * e.height;
                     i = o - t.left - .5 * t.width, n = a - t.top - .5 * t.height;
                 }
                 let c = 1;
                 "number" == typeof t ? c = t : "full" === t ? c = a : "cover" === t ? c = l : "max" === t ? c = r : "fit" === t ? c = 1 : "next" === t && (c = this.getNextScale("iterateZoom")), 
-                c = c / o || 1, e = e === z ? c > 1 ? .15 : .25 : e, this.applyChange({
+                c = c / o || 1, e = "auto" === e ? c > 1 ? .15 : .25 : e, this.applyChange({
                     scale: c,
                     originX: i,
                     originY: n,
@@ -25358,30 +25355,30 @@
                 this.detachPlugins();
             }
         }
-        Object.defineProperty(I, "defaults", {
+        Object.defineProperty(k, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
             value: y
-        }), Object.defineProperty(I, "Plugins", {
+        }), Object.defineProperty(k, "Plugins", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
             value: {}
         });
-        const D = function(t, e) {
+        const I = function(t, e) {
             let i = !0;
             return (...n) => {
                 i && (i = !1, t(...n), setTimeout((() => {
                     i = !0;
                 }), e));
             };
-        }, F = (t, e) => {
+        }, D = (t, e) => {
             let i = [];
             return t.childNodes.forEach((t => {
                 t.nodeType !== Node.ELEMENT_NODE || e && !t.matches(e) || i.push(t);
             })), i;
-        }, j = {
+        }, F = {
             viewport: null,
             track: null,
             enabled: !0,
@@ -25419,11 +25416,11 @@
                 GOTO: "Go to slide #%d"
             }
         };
-        var B;
+        var j;
         !function(t) {
             t[t.Init = 0] = "Init", t[t.Ready = 1] = "Ready", t[t.Destroy = 2] = "Destroy";
-        }(B || (B = {}));
-        const H = t => {
+        }(j || (j = {}));
+        const B = t => {
             if ("string" == typeof t || t instanceof HTMLElement) t = {
                 html: t
             }; else {
@@ -25443,13 +25440,13 @@
                 pos: 0,
                 transition: !1
             }, t);
-        }, N = (t = {}) => Object.assign({
+        }, H = (t = {}) => Object.assign({
             index: -1,
             slides: [],
             dim: 0,
             pos: -1
         }, t);
-        class _ extends f {
+        class N extends f {
             constructor(t, e) {
                 super(e), Object.defineProperty(this, "instance", {
                     enumerable: !0,
@@ -25461,7 +25458,7 @@
             attach() {}
             detach() {}
         }
-        const $ = {
+        const _ = {
             classes: {
                 list: "f-carousel__dots",
                 isDynamic: "is-dynamic",
@@ -25478,7 +25475,7 @@
             maxCount: 1 / 0,
             minCount: 2
         };
-        class W extends _ {
+        class $ extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "isDynamic", {
                     enumerable: !0,
@@ -25545,14 +25542,14 @@
                 this.instance.off([ "refresh", "change" ], this.onRefresh), this.cleanup();
             }
         }
-        Object.defineProperty(W, "defaults", {
+        Object.defineProperty($, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: $
+            value: _
         });
-        const X = "disabled", q = "next", Y = "prev";
-        class V extends _ {
+        const W = "disabled", X = "next", q = "prev";
+        class Y extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "container", {
                     enumerable: !0,
@@ -25581,15 +25578,15 @@
                 if (e < 2) return void this.cleanup();
                 this.build();
                 let n = this.prev, s = this.next;
-                n && s && (n.removeAttribute(X), s.removeAttribute(X), t.isInfinite || (i <= 0 && n.setAttribute(X, ""), 
-                i >= e - 1 && s.setAttribute(X, "")));
+                n && s && (n.removeAttribute(W), s.removeAttribute(W), t.isInfinite || (i <= 0 && n.setAttribute(W, ""), 
+                i >= e - 1 && s.setAttribute(W, "")));
             }
             addBtn(t) {
                 var e;
                 const i = this.instance, n = document.createElement("button");
                 n.setAttribute("tabindex", "0"), n.setAttribute("title", i.localize(`{{${t.toUpperCase()}}}`)), 
-                P(n, this.cn("button") + " " + this.cn(t === q ? "isNext" : "isPrev"));
-                const s = i.isRTL ? t === q ? Y : q : t;
+                P(n, this.cn("button") + " " + this.cn(t === X ? "isNext" : "isPrev"));
+                const s = i.isRTL ? t === X ? q : X : t;
                 var o;
                 return n.innerHTML = i.localize(this.option(`${s}Tpl`)), n.dataset[`carousel${o = t, 
                 o ? o.match("^[a-z]") ? o.charAt(0).toUpperCase() + o.substring(1) : o : ""}`] = "true", 
@@ -25600,8 +25597,8 @@
                 let {container: i, prev: n, next: s} = this;
                 i || (i = t.querySelector("." + e), this.isDom = !!i), i || (i = document.createElement("div"), 
                 P(i, e), t.appendChild(i)), this.container = i, s || (s = i.querySelector("[data-carousel-next]")), 
-                s || (s = this.addBtn(q)), this.next = s, n || (n = i.querySelector("[data-carousel-prev]")), 
-                n || (n = this.addBtn(Y)), this.prev = n;
+                s || (s = this.addBtn(X)), this.next = s, n || (n = i.querySelector("[data-carousel-prev]")), 
+                n || (n = this.addBtn(q)), this.prev = n;
             }
             cleanup() {
                 this.isDom || (this.prev && this.prev.remove(), this.next && this.next.remove(), 
@@ -25615,7 +25612,7 @@
                 this.instance.off([ "refresh", "change" ], this.onRefresh), this.cleanup();
             }
         }
-        Object.defineProperty(V, "defaults", {
+        Object.defineProperty(Y, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
@@ -25630,7 +25627,7 @@
                 prevTpl: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" tabindex="-1"><path d="M15 3l-9 9 9 9"/></svg>'
             }
         });
-        class Z extends _ {
+        class V extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "selectedIndex", {
                     enumerable: !0,
@@ -25657,8 +25654,8 @@
             }
             attachEvents() {
                 const {nav: t, target: e} = this;
-                t && e && (t.options.initialSlide = e.options.initialPage, t.state === B.Ready ? this.onNavReady(t) : t.on("ready", this.onNavReady), 
-                e.state === B.Ready ? this.onTargetReady(e) : e.on("ready", this.onTargetReady));
+                t && e && (t.options.initialSlide = e.options.initialPage, t.state === j.Ready ? this.onNavReady(t) : t.on("ready", this.onNavReady), 
+                e.state === j.Ready ? this.onTargetReady(e) : e.on("ready", this.onTargetReady));
             }
             onNavReady(t) {
                 t.on("createSlide", this.onNavCreateSlide), t.on("Panzoom.click", this.onNavClick), 
@@ -25690,7 +25687,7 @@
                 var t, e;
                 const {target: i, nav: n} = this;
                 if (!i || !n) return;
-                if (n.state !== B.Ready || i.state !== B.Ready) return;
+                if (n.state !== j.Ready || i.state !== j.Ready) return;
                 const s = null === (e = null === (t = i.pages[i.page]) || void 0 === t ? void 0 : t.slides[0]) || void 0 === e ? void 0 : e.index, o = n.getPageForSlide(s);
                 this.markSelectedSlide(s), n.slideTo(o, null === n.prevPage && null === i.prevPage ? {
                     friction: 0
@@ -25698,7 +25695,7 @@
             }
             markSelectedSlide(t) {
                 const e = this.nav;
-                e && e.state === B.Ready && (this.selectedIndex = t, [ ...e.slides ].map((e => {
+                e && e.state === j.Ready && (this.selectedIndex = t, [ ...e.slides ].map((e => {
                     e.el && e.el.classList[e.index === t ? "add" : "remove"]("is-nav-selected");
                 })));
             }
@@ -25714,7 +25711,7 @@
                 i.off("refresh", t.onTargetChange), i.off("change", t.onTargetChange)), t.target = null;
             }
         }
-        Object.defineProperty(Z, "defaults", {
+        Object.defineProperty(V, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
@@ -25722,17 +25719,17 @@
                 friction: .35
             }
         });
-        const U = {
-            Navigation: V,
-            Dots: W,
-            Sync: Z
-        }, G = "animationend", K = "isSelected", J = "slide";
-        class Q extends g {
+        const Z = {
+            Navigation: Y,
+            Dots: $,
+            Sync: V
+        }, U = "animationend", G = "isSelected", K = "slide";
+        class J extends g {
             get axis() {
                 return this.isHorizontal ? "e" : "f";
             }
             get isEnabled() {
-                return this.state === B.Ready;
+                return this.state === j.Ready;
             }
             get isInfinite() {
                 let t = !1;
@@ -25770,7 +25767,7 @@
                     enumerable: !0,
                     configurable: !0,
                     writable: !0,
-                    value: B.Init
+                    value: j.Init
                 }), Object.defineProperty(this, "page", {
                     enumerable: !0,
                     configurable: !0,
@@ -25827,27 +25824,27 @@
                     writable: !0,
                     value: 0
                 }), "string" == typeof t && (t = document.querySelector(t)), !t || !E(t)) throw new Error("No Element found");
-                this.container = t, this.slideNext = D(this.slideNext.bind(this), 150), this.slidePrev = D(this.slidePrev.bind(this), 150), 
+                this.container = t, this.slideNext = I(this.slideNext.bind(this), 150), this.slidePrev = I(this.slidePrev.bind(this), 150), 
                 this.userOptions = e, this.userPlugins = i, queueMicrotask((() => {
                     this.processOptions();
                 }));
             }
             processOptions() {
                 var t, e;
-                const i = u({}, Q.defaults, this.userOptions);
+                const i = u({}, J.defaults, this.userOptions);
                 let n = "";
                 const s = i.breakpoints;
                 if (s && d(s)) for (const [t, e] of Object.entries(s)) window.matchMedia(t).matches && d(e) && (n += t, 
                 u(i, e));
-                n === this.bp && this.state !== B.Init || (this.bp = n, this.state === B.Ready && (i.initialSlide = (null === (e = null === (t = this.pages[this.page]) || void 0 === t ? void 0 : t.slides[0]) || void 0 === e ? void 0 : e.index) || 0), 
-                this.state !== B.Init && this.destroy(), super.setOptions(i), !1 === this.option("enabled") ? this.attachEvents() : setTimeout((() => {
+                n === this.bp && this.state !== j.Init || (this.bp = n, this.state === j.Ready && (i.initialSlide = (null === (e = null === (t = this.pages[this.page]) || void 0 === t ? void 0 : t.slides[0]) || void 0 === e ? void 0 : e.index) || 0), 
+                this.state !== j.Init && this.destroy(), super.setOptions(i), !1 === this.option("enabled") ? this.attachEvents() : setTimeout((() => {
                     this.init();
                 }), 0));
             }
             init() {
-                this.state = B.Init, this.emit("init"), this.attachPlugins(Object.assign(Object.assign({}, Q.Plugins), this.userPlugins)), 
+                this.state = j.Init, this.emit("init"), this.attachPlugins(Object.assign(Object.assign({}, J.Plugins), this.userPlugins)), 
                 this.emit("attachPlugins"), this.initLayout(), this.initSlides(), this.updateMetrics(), 
-                this.setInitialPosition(), this.initPanzoom(), this.attachEvents(), this.state = B.Ready, 
+                this.setInitialPosition(), this.initPanzoom(), this.attachEvents(), this.state = j.Ready, 
                 this.emit("ready");
             }
             initLayout() {
@@ -25855,7 +25852,7 @@
                 P(t, this.cn("container")), o(t, e.isLTR, !this.isRTL), o(t, e.isRTL, this.isRTL), 
                 o(t, e.isVertical, !this.isHorizontal), o(t, e.isHorizontal, this.isHorizontal);
                 let i = this.option("viewport") || t.querySelector(`.${e.viewport}`);
-                i || (i = document.createElement("div"), P(i, e.viewport), i.append(...F(t, `.${e.slide}`)), 
+                i || (i = document.createElement("div"), P(i, e.viewport), i.append(...D(t, `.${e.slide}`)), 
                 t.prepend(i)), i.addEventListener("scroll", this.onScroll);
                 let n = this.option("track") || t.querySelector(`.${e.track}`);
                 n || (n = document.createElement("div"), P(n, e.track), n.append(...Array.from(i.childNodes))), 
@@ -25866,9 +25863,9 @@
                 const {track: t} = this;
                 if (!t) return;
                 const e = [ ...this.slides ], i = [];
-                [ ...F(t, `.${this.cn(J)}`) ].forEach((t => {
+                [ ...D(t, `.${this.cn(K)}`) ].forEach((t => {
                     if (E(t)) {
-                        const e = H({
+                        const e = B({
                             el: t,
                             isDom: !0,
                             index: this.slides.length
@@ -25876,7 +25873,7 @@
                         i.push(e);
                     }
                 }));
-                for (let t of [ ...this.option("slides", []) || [], ...e ]) i.push(H(t));
+                for (let t of [ ...this.option("slides", []) || [], ...e ]) i.push(B(t));
                 this.slides = i;
                 for (let t = 0; t < this.slides.length; t++) this.slides[t].index = t;
                 for (const t of i) this.emit("beforeInitSlide", t, t.index), this.emit("initSlide", t, t.index);
@@ -25897,7 +25894,7 @@
             initPanzoom() {
                 this.panzoom && (this.panzoom.destroy(), this.panzoom = null);
                 const t = this.option("Panzoom") || {};
-                this.panzoom = new I(this.viewport, u({}, {
+                this.panzoom = new k(this.viewport, u({}, {
                     content: this.track,
                     zoom: !1,
                     panOnlyZoomed: !1,
@@ -25926,7 +25923,7 @@
                 let n = this.option("slidesPerPage");
                 n = ("auto" === n || e <= i) && !1 !== this.option("fill") ? 1 / 0 : parseFloat(n + "");
                 let s = 0, o = 0, a = 0;
-                for (const e of this.slides) (!t.length || o + e.dim - i > .05 || a >= n) && (t.push(N()), 
+                for (const e of this.slides) (!t.length || o + e.dim - i > .05 || a >= n) && (t.push(H()), 
                 s = t.length - 1, o = 0, a = 0), t[s].slides.push(e), o += e.dim + e.gap, a++;
                 return t;
             }
@@ -25962,7 +25959,7 @@
                 let o = 0, a = 0, r = e.el;
                 const l = !(!r || r.parentNode);
                 if (r ? o = parseFloat(r.dataset[s] || "") || 0 : (r = document.createElement("div"), 
-                r.style.visibility = "hidden", (this.track || document.body).prepend(r)), P(r, this.cn(J) + " " + e.class + " " + e.customClass), 
+                r.style.visibility = "hidden", (this.track || document.body).prepend(r)), P(r, this.cn(K) + " " + e.class + " " + e.customClass), 
                 o) r.style[s] = `${o}px`, r.style["width" === s ? "height" : "width"] = ""; else {
                     l && (this.track || document.body).prepend(r), o = r.getBoundingClientRect()[s] * Math.max(1, (null === (i = window.visualViewport) || void 0 === i ? void 0 : i.scale) || 1);
                     let t = r[this.isHorizontal ? "offsetWidth" : "offsetHeight"];
@@ -26033,7 +26030,7 @@
                 if (!e || !t) return;
                 if (t.el && t.el.parentNode) return;
                 const n = t.el || document.createElement("div");
-                P(n, this.cn(J)), P(n, t.class), P(n, t.customClass);
+                P(n, this.cn(K)), P(n, t.class), P(n, t.customClass);
                 const s = t.html;
                 s && (s instanceof HTMLElement ? n.appendChild(s) : n.innerHTML = t.html + "");
                 const o = [];
@@ -26049,11 +26046,11 @@
             removeSlideEl(t, e = !1) {
                 const i = null == t ? void 0 : t.el;
                 if (!i || !i.parentNode) return;
-                const n = this.cn(K);
+                const n = this.cn(G);
                 if (i.classList.contains(n) && (S(i, n), this.emit("unselectSlide", t)), t.isDom && !e) return i.removeAttribute("aria-hidden"), 
                 i.removeAttribute("data-index"), void (i.style.left = "");
                 this.emit("removeSlide", t);
-                const s = new CustomEvent(G);
+                const s = new CustomEvent(U);
                 i.dispatchEvent(s), t.el && (t.el.remove(), t.el = null);
             }
             transitionTo(t = 0, e = this.option("transition")) {
@@ -26063,9 +26060,7 @@
                 t = parseInt((t || 0).toString()) || 0;
                 const c = this.getPageFromIndex(t);
                 if (!l || !r[c] || r.length < 2 || Math.abs(((null === (n = null === (i = r[a]) || void 0 === i ? void 0 : i.slides[0]) || void 0 === n ? void 0 : n.dim) || 0) - this.viewportDim) > 1) return !1;
-                let h = t > a ? 1 : -1;
-                this.isInfinite && (0 === a && t === r.length - 1 && (h = -1), a === r.length - 1 && 0 === t && (h = 1));
-                const d = r[c].pos * (this.isRTL ? 1 : -1);
+                const h = t > a ? 1 : -1, d = r[c].pos * (this.isRTL ? 1 : -1);
                 if (a === c && Math.abs(d - l.target[this.axis]) < 1) return !1;
                 this.clearTransitions();
                 const u = l.isResting;
@@ -26073,10 +26068,10 @@
                 const p = (null === (s = r[a]) || void 0 === s ? void 0 : s.slides[0]) || null, f = (null === (o = r[c]) || void 0 === o ? void 0 : o.slides[0]) || null;
                 this.inTransition.add(f.index), this.createSlideEl(f);
                 let g = p.el, m = f.el;
-                u || e === J || (e = "fadeFast", g = null);
+                u || e === K || (e = "fadeFast", g = null);
                 const v = this.isRTL ? "next" : "prev", b = this.isRTL ? "prev" : "next";
-                return g && (this.inTransition.add(p.index), p.transition = e, g.addEventListener(G, this.onAnimationEnd), 
-                g.classList.add(`f-${e}Out`, `to-${h > 0 ? b : v}`)), m && (f.transition = e, m.addEventListener(G, this.onAnimationEnd), 
+                return g && (this.inTransition.add(p.index), p.transition = e, g.addEventListener(U, this.onAnimationEnd), 
+                g.classList.add(`f-${e}Out`, `to-${h > 0 ? b : v}`)), m && (f.transition = e, m.addEventListener(U, this.onAnimationEnd), 
                 m.classList.add(`f-${e}In`, `from-${h > 0 ? v : b}`)), l.current[this.axis] = d, 
                 l.target[this.axis] = d, l.requestTick(), this.onChange(c), !0;
             }
@@ -26091,7 +26086,7 @@
             markSelectedSlides() {
                 if (!this.pages[this.page] || !this.pages[this.page].slides) return;
                 const t = "aria-hidden";
-                let e = this.cn(K);
+                let e = this.cn(G);
                 if (e) for (const i of this.slides) {
                     const n = i.el;
                     n && (n.dataset.index = `${i.index}`, n.classList.contains("f-thumbs__slide") ? this.getVisibleSlides(0).has(i) ? n.removeAttribute(t) : n.setAttribute(t, "true") : this.pages[this.page].slides.includes(i) ? (n.classList.contains(e) || (P(n, e), 
@@ -26198,11 +26193,11 @@
                 this.inTransition.size || this.emit("settle");
             }
             reInit(t = null, e = null) {
-                this.destroy(), this.state = B.Init, this.prevPage = null, this.userOptions = t || this.userOptions, 
+                this.destroy(), this.state = j.Init, this.prevPage = null, this.userOptions = t || this.userOptions, 
                 this.userPlugins = e || this.userPlugins, this.processOptions();
             }
             slideTo(t = 0, {friction: e = this.option("friction"), transition: i = this.option("transition")} = {}) {
-                if (this.state === B.Destroy) return;
+                if (this.state === j.Destroy) return;
                 t = parseInt((t || 0).toString()) || 0;
                 const n = this.getPageFromIndex(t), {axis: s, isHorizontal: o, isRTL: a, pages: r, panzoom: l} = this, c = r.length, h = a && o ? 1 : -1;
                 if (!l || !c) return;
@@ -26245,7 +26240,7 @@
                 for (const e of this.slides) {
                     const i = e.el;
                     if (i) {
-                        i.removeEventListener(G, this.onAnimationEnd), i.classList.remove(...t);
+                        i.removeEventListener(U, this.onAnimationEnd), i.classList.remove(...t);
                         const n = e.transition;
                         n && i.classList.remove(`f-${n}Out`, `f-${n}In`);
                     }
@@ -26257,7 +26252,7 @@
                 const a = this.panzoom, r = (null === (i = this.pages[this.page]) || void 0 === i ? void 0 : i.pos) || 0, l = (null === (n = this.pages[this.page]) || void 0 === n ? void 0 : n.dim) || 0, c = this.contentDim < this.viewportDim;
                 let h = Array.isArray(e) ? e : [ e ];
                 const d = [];
-                for (const t of h) d.push(H(t));
+                for (const t of h) d.push(B(t));
                 this.slides.splice(t, 0, ...d);
                 for (let t = 0; t < this.slides.length; t++) this.slides[t].index = t;
                 for (const t of d) this.emit("beforeInitSlide", t, t.index);
@@ -26305,7 +26300,7 @@
                     c = i), n = t(n, 1e3), o = t(o, 1e3), i.dim = n, i.gap = o, i.pos = h, h += n, (a || e < s.length - 1) && (h += o);
                 }
                 h = t(h, 1e3), this.contentDim = h, e && (e.contentRect[r] = h, e.contentRect[o ? "fullWidth" : "fullHeight"] = h), 
-                this.pages = this.createPages(), this.pages = this.processPages(), this.state === B.Init && this.setInitialPage(), 
+                this.pages = this.createPages(), this.pages = this.processPages(), this.state === j.Init && this.setInitialPage(), 
                 this.page = Math.max(0, Math.min(this.page, this.pages.length - 1)), this.manageSlideVisiblity(), 
                 this.emit("refresh");
             }
@@ -26368,8 +26363,8 @@
                 this.onChange(t);
             }
             destroy() {
-                if ([ B.Destroy ].includes(this.state)) return;
-                this.state = B.Destroy;
+                if ([ j.Destroy ].includes(this.state)) return;
+                this.state = j.Destroy;
                 const {container: t, viewport: e, track: i, slides: n, panzoom: s} = this, o = this.option("classes");
                 t.removeEventListener("click", this.onClick, {
                     passive: !1,
@@ -26385,23 +26380,23 @@
                 this.events = new Map, a && this.events.set("ready", a);
             }
         }
-        Object.defineProperty(Q, "Panzoom", {
+        Object.defineProperty(J, "Panzoom", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: I
-        }), Object.defineProperty(Q, "defaults", {
+            value: k
+        }), Object.defineProperty(J, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: j
-        }), Object.defineProperty(Q, "Plugins", {
+            value: F
+        }), Object.defineProperty(J, "Plugins", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: U
+            value: Z
         });
-        const tt = function(t) {
+        const Q = function(t) {
             if (!E(t)) return 0;
             const e = window.scrollY, i = window.innerHeight, n = e + i, s = t.getBoundingClientRect(), o = s.y + e, a = s.height, r = o + a;
             if (e > r || n < o) return 0;
@@ -26411,17 +26406,17 @@
             o < e && (l -= e - o), r > n && (l -= r - n);
             const c = l / i * 100;
             return Math.round(c);
-        }, et = !("undefined" == typeof window || !window.document || !window.document.createElement);
-        let it;
-        const nt = [ "a[href]", "area[href]", 'input:not([disabled]):not([type="hidden"]):not([aria-hidden])', "select:not([disabled]):not([aria-hidden])", "textarea:not([disabled]):not([aria-hidden])", "button:not([disabled]):not([aria-hidden]):not(.fancybox-focus-guard)", "iframe", "object", "embed", "video", "audio", "[contenteditable]", '[tabindex]:not([tabindex^="-"]):not([disabled]):not([aria-hidden])' ].join(","), st = t => {
-            if (t && et) {
-                void 0 === it && document.createElement("div").focus({
+        }, tt = !("undefined" == typeof window || !window.document || !window.document.createElement);
+        let et;
+        const it = [ "a[href]", "area[href]", 'input:not([disabled]):not([type="hidden"]):not([aria-hidden])', "select:not([disabled]):not([aria-hidden])", "textarea:not([disabled]):not([aria-hidden])", "button:not([disabled]):not([aria-hidden]):not(.fancybox-focus-guard)", "iframe", "object", "embed", "video", "audio", "[contenteditable]", '[tabindex]:not([tabindex^="-"]):not([disabled]):not([aria-hidden])' ].join(","), nt = t => {
+            if (t && tt) {
+                void 0 === et && document.createElement("div").focus({
                     get preventScroll() {
-                        return it = !0, !1;
+                        return et = !0, !1;
                     }
                 });
                 try {
-                    if (it) t.focus({
+                    if (et) t.focus({
                         preventScroll: !0
                     }); else {
                         const e = window.scrollY || document.body.scrollTop, i = window.scrollX || document.body.scrollLeft;
@@ -26433,7 +26428,7 @@
                     }
                 } catch (t) {}
             }
-        }, ot = () => {
+        }, st = () => {
             const t = document;
             let e, i = "", n = "", s = "";
             return t.fullscreenEnabled ? (i = "requestFullscreen", n = "exitFullscreen", s = "fullscreenElement") : t.webkitFullscreenEnabled && (i = "webkitRequestFullscreen", 
@@ -26448,10 +26443,9 @@
                     return t[s];
                 }
             }), e;
-        }, at = {
-            animated: !0,
-            autoFocus: !0,
-            backdropClick: "close",
+        }, ot = {
+            dragToClose: !0,
+            hideScrollbar: !0,
             Carousel: {
                 classes: {
                     container: "fancybox__carousel",
@@ -26460,34 +26454,16 @@
                     slide: "fancybox__slide"
                 }
             },
-            closeButton: "auto",
-            closeExisting: !1,
-            commonCaption: !1,
-            compact: () => window.matchMedia("(max-width: 578px), (max-height: 578px)").matches,
             contentClick: "toggleZoom",
             contentDblClick: !1,
-            defaultType: "image",
-            defaultDisplay: "flex",
-            dragToClose: !0,
-            Fullscreen: {
-                autoStart: !1
-            },
-            groupAll: !1,
-            groupAttr: "data-fancybox",
-            hideClass: "f-fadeOut",
-            hideScrollbar: !0,
+            backdropClick: "close",
+            animated: !0,
             idle: 3500,
-            keyboard: {
-                Escape: "close",
-                Delete: "close",
-                Backspace: "close",
-                PageUp: "next",
-                PageDown: "prev",
-                ArrowUp: "prev",
-                ArrowDown: "next",
-                ArrowRight: "next",
-                ArrowLeft: "prev"
-            },
+            showClass: "f-zoomInUp",
+            hideClass: "f-fadeOut",
+            commonCaption: !1,
+            parentEl: null,
+            startIndex: 0,
             l10n: Object.assign(Object.assign({}, b), {
                 CLOSE: "Close",
                 NEXT: "Next",
@@ -26505,29 +26481,47 @@
                 TOGGLE_FULLSCREEN: "Toggle full-screen mode",
                 DOWNLOAD: "Download"
             }),
-            parentEl: null,
-            placeFocusBack: !0,
-            showClass: "f-zoomInUp",
-            startIndex: 0,
             tpl: {
                 closeButton: '<button data-fancybox-close class="f-button is-close-btn" title="{{CLOSE}}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" tabindex="-1"><path d="M20 20L4 4m16 0L4 20"/></svg></button>',
                 main: '<div class="fancybox__container" role="dialog" aria-modal="true" aria-label="{{MODAL}}" tabindex="-1">\n    <div class="fancybox__backdrop"></div>\n    <div class="fancybox__carousel"></div>\n    <div class="fancybox__footer"></div>\n  </div>'
             },
+            groupAll: !1,
+            groupAttr: "data-fancybox",
+            defaultType: "image",
+            defaultDisplay: "block",
+            autoFocus: !0,
             trapFocus: !0,
+            placeFocusBack: !0,
+            closeButton: "auto",
+            keyboard: {
+                Escape: "close",
+                Delete: "close",
+                Backspace: "close",
+                PageUp: "next",
+                PageDown: "prev",
+                ArrowUp: "prev",
+                ArrowDown: "next",
+                ArrowRight: "next",
+                ArrowLeft: "prev"
+            },
+            Fullscreen: {
+                autoStart: !1
+            },
+            compact: () => window.matchMedia("(max-width: 578px), (max-height: 578px)").matches,
             wheel: "zoom"
         };
-        var rt, lt;
+        var at, rt;
         !function(t) {
             t[t.Init = 0] = "Init", t[t.Ready = 1] = "Ready", t[t.Closing = 2] = "Closing", 
             t[t.CustomClosing = 3] = "CustomClosing", t[t.Destroy = 4] = "Destroy";
-        }(rt || (rt = {})), function(t) {
+        }(at || (at = {})), function(t) {
             t[t.Loading = 0] = "Loading", t[t.Opening = 1] = "Opening", t[t.Ready = 2] = "Ready", 
             t[t.Closing = 3] = "Closing";
-        }(lt || (lt = {}));
-        let ct = "", ht = !1, dt = !1, ut = null;
-        const pt = () => {
+        }(rt || (rt = {}));
+        let lt = "", ct = !1, ht = !1, dt = null;
+        const ut = () => {
             let t = "", e = "";
-            const i = Oe.getInstance();
+            const i = Ce.getInstance();
             if (i) {
                 const n = i.carousel, s = i.getSlide();
                 if (n && s) {
@@ -26541,44 +26535,44 @@
                 slug: e,
                 index: 1
             };
-        }, ft = () => {
+        }, pt = () => {
             const t = new URL(document.URL).hash, e = t.slice(1).split("-"), i = e[e.length - 1], n = i && /^\+?\d+$/.test(i) && parseInt(e.pop() || "1", 10) || 1;
             return {
                 hash: t,
                 slug: e.join("-"),
                 index: n
             };
-        }, gt = () => {
-            const {slug: t, index: e} = ft();
+        }, ft = () => {
+            const {slug: t, index: e} = pt();
             if (!t) return;
             let i = document.querySelector(`[data-slug="${t}"]`);
             if (i && i.dispatchEvent(new CustomEvent("click", {
                 bubbles: !0,
                 cancelable: !0
-            })), Oe.getInstance()) return;
+            })), Ce.getInstance()) return;
             const n = document.querySelectorAll(`[data-fancybox="${t}"]`);
             n.length && (i = n[e - 1], i && i.dispatchEvent(new CustomEvent("click", {
                 bubbles: !0,
                 cancelable: !0
             })));
-        }, mt = () => {
-            if (!1 === Oe.defaults.Hash) return;
-            const t = Oe.getInstance();
+        }, gt = () => {
+            if (!1 === Ce.defaults.Hash) return;
+            const t = Ce.getInstance();
             if (!1 === (null == t ? void 0 : t.options.Hash)) return;
-            const {slug: e, index: i} = ft(), {slug: n} = pt();
-            t && (e === n ? t.jumpTo(i - 1) : (ht = !0, t.close())), gt();
-        }, vt = () => {
-            ut && clearTimeout(ut), queueMicrotask((() => {
-                mt();
+            const {slug: e, index: i} = pt(), {slug: n} = ut();
+            t && (e === n ? t.jumpTo(i - 1) : (ct = !0, t.close())), ft();
+        }, mt = () => {
+            dt && clearTimeout(dt), queueMicrotask((() => {
+                gt();
             }));
-        }, bt = () => {
-            window.addEventListener("hashchange", vt, !1), setTimeout((() => {
-                mt();
+        }, vt = () => {
+            window.addEventListener("hashchange", mt, !1), setTimeout((() => {
+                gt();
             }), 500);
         };
-        et && (/complete|interactive|loaded/.test(document.readyState) ? bt() : document.addEventListener("DOMContentLoaded", bt));
-        const yt = "is-zooming-in";
-        class wt extends _ {
+        tt && (/complete|interactive|loaded/.test(document.readyState) ? vt() : document.addEventListener("DOMContentLoaded", vt));
+        const bt = "is-zooming-in";
+        class yt extends N {
             onCreateSlide(t, e, i) {
                 const n = this.instance.optionFor(i, "src") || "";
                 i.el && "image" === i.type && "string" == typeof n && this.setImage(i, n);
@@ -26587,7 +26581,7 @@
                 i.panzoom && i.panzoom.destroy(), i.panzoom = void 0, i.imageEl = void 0;
             }
             onChange(t, e, i, n) {
-                S(this.instance.container, yt);
+                S(this.instance.container, bt);
                 for (const t of e.slides) {
                     const e = t.panzoom;
                     e && t.index !== i && e.reset(.35);
@@ -26602,7 +26596,7 @@
                 a.updateMetrics();
                 let l = this.getZoomInfo(n);
                 if (!l) return;
-                this.instance.state = rt.CustomClosing, i.classList.remove(yt), i.classList.add("is-zooming-out"), 
+                this.instance.state = at.CustomClosing, i.classList.remove(bt), i.classList.add("is-zooming-out"), 
                 o.style.backgroundImage = `url('${r}')`;
                 const c = i.getBoundingClientRect();
                 1 === ((null === (t = window.visualViewport) || void 0 === t ? void 0 : t.scale) || 1) && Object.assign(i.style, {
@@ -26663,7 +26657,7 @@
                             const i = new Image;
                             i.onload = t, i.onerror = e, i.src = l;
                         }))).then((() => {
-                            i.hideLoading(t), t.state = lt.Opening, this.instance.emit("reveal", t), this.zoomIn(t).then((() => {
+                            i.hideLoading(t), t.state = rt.Opening, this.instance.emit("reveal", t), this.zoomIn(t).then((() => {
                                 h(), this.instance.done(t);
                             }), (() => {})), c && setTimeout((() => {
                                 h();
@@ -26702,12 +26696,12 @@
                         t.sizes && l.setAttribute("sizes", t.sizes);
                     }
                     P(l, "fancybox-image"), t.imageEl = l, a.setContent(t, l, !1);
-                    t.panzoom = new I(r, u({
+                    t.panzoom = new k(r, u({
                         transformParent: !0
                     }, this.option("Panzoom") || {}, {
                         content: l,
-                        width: (e, i) => a.optionFor(t, "width", "auto", i) || "auto",
-                        height: (e, i) => a.optionFor(t, "height", "auto", i) || "auto",
+                        width: a.optionFor(t, "width", "auto"),
+                        height: a.optionFor(t, "height", "auto"),
                         wheel: () => {
                             const t = a.option("wheel");
                             return ("zoom" === t || "pan" == t) && t;
@@ -26748,10 +26742,10 @@
                     const l = this.getZoomInfo(t);
                     if (!(l && r && a && o && s)) return void i();
                     const {x: c, y: h, scale: d, opacity: u} = l, p = () => {
-                        t.state !== lt.Closing && (u && (a.style.opacity = Math.max(Math.min(1, 1 - (1 - o.scale) / (1 - d)), 0) + ""), 
+                        t.state !== rt.Closing && (u && (a.style.opacity = Math.max(Math.min(1, 1 - (1 - o.scale) / (1 - d)), 0) + ""), 
                         o.scale >= 1 && o.scale > o.targetScale - .1 && e(o));
                     }, f = t => {
-                        (t.scale < .99 || t.scale > 1.01) && !t.isDragging || (S(s, yt), a.style.opacity = "", 
+                        (t.scale < .99 || t.scale > 1.01) && !t.isDragging || (S(s, bt), a.style.opacity = "", 
                         t.off("endAnimation", f), t.off("touchStart", f), t.off("afterTransform", p), e(t));
                     };
                     o.on("endAnimation", f), o.on("touchStart", f), o.on("afterTransform", p), o.on([ "error", "destroy" ], (() => {
@@ -26766,12 +26760,12 @@
                     const g = {
                         event: "mousemove" === o.panMode ? n.prevMouseMoveEvent || n.options.event : void 0
                     }, m = this.optionFor(t, "initialSize");
-                    P(s, yt), n.hideLoading(t), "full" === m ? o.zoomToFull(g) : "cover" === m ? o.zoomToCover(g) : "max" === m ? o.zoomToMax(g) : o.reset(.172);
+                    P(s, bt), n.hideLoading(t), "full" === m ? o.zoomToFull(g) : "cover" === m ? o.zoomToCover(g) : "max" === m ? o.zoomToMax(g) : o.reset(.172);
                 }));
             }
             getZoomInfo(t) {
                 const {el: e, imageEl: i, thumbEl: n, panzoom: s} = t, o = this.instance, a = o.container;
-                if (!e || !i || !n || !s || tt(n) < 3 || !this.optionFor(t, "zoom") || !a || o.state === rt.Destroy) return !1;
+                if (!e || !i || !n || !s || Q(n) < 3 || !this.optionFor(t, "zoom") || !a || o.state === at.Destroy) return !1;
                 if ("0" === getComputedStyle(a).getPropertyValue("--f-images-zoom")) return !1;
                 const r = window.visualViewport || null;
                 if (1 !== (r ? r.scale : 1)) return !1;
@@ -26799,7 +26793,7 @@
                 e.off("Carousel.removeSlide", t.onRemoveSlide), e.off("close", t.onClose);
             }
         }
-        Object.defineProperty(wt, "defaults", {
+        Object.defineProperty(yt, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
@@ -26813,7 +26807,7 @@
                 zoomOpacity: "auto"
             }
         }), "function" == typeof SuppressedError && SuppressedError;
-        const xt = "html", Et = "image", St = "map", Pt = "youtube", Ct = "vimeo", Tt = "html5video", Mt = (t, e = {}) => {
+        const wt = "html", xt = "image", Et = "map", St = "youtube", Pt = "vimeo", Ct = "html5video", Tt = (t, e = {}) => {
             const i = new URL(t), n = new URLSearchParams(i.search), s = new URLSearchParams;
             for (const [t, i] of [ ...n, ...Object.entries(e) ]) {
                 let e = i + "";
@@ -26824,7 +26818,7 @@
             }
             let o = s + "", a = t.match(/#t=((.*)?\d+s)/);
             return a && (o += `#t=${a[1]}`), o;
-        }, Ot = {
+        }, Mt = {
             ajax: null,
             autoSize: !0,
             iframeAttr: {
@@ -26850,8 +26844,8 @@
                 rel: 0,
                 fs: 1
             }
-        }, At = [ "image", "html", "ajax", "inline", "clone", "iframe", "map", "pdf", "html5video", "youtube", "vimeo" ];
-        class Lt extends _ {
+        }, Ot = [ "image", "html", "ajax", "inline", "clone", "iframe", "map", "pdf", "html5video", "youtube", "vimeo" ];
+        class At extends N {
             onBeforeInitSlide(t, e, i) {
                 this.processType(i);
             }
@@ -26863,27 +26857,26 @@
                 const i = e.iframeEl;
                 i && (i.onload = i.onerror = null, i.src = "//about:blank", e.iframeEl = null);
                 const n = e.contentEl, s = e.placeholderEl;
-                if ("inline" === e.type && n && s) n.classList.remove("fancybox__content"), "none" !== getComputedStyle(n).getPropertyValue("display") && (n.style.display = "none"), 
-                setTimeout((() => {
-                    s && (n && s.parentNode && s.parentNode.insertBefore(n, s), s.remove());
-                }), 0), e.contentEl = void 0, e.placeholderEl = void 0; else for (;e.el && e.el.firstChild; ) e.el.removeChild(e.el.firstChild);
+                if ("inline" === e.type && n && s) n.classList.remove("fancybox__content"), "none" !== n.style.display && (n.style.display = "none"), 
+                s.parentNode && s.parentNode.insertBefore(n, s), s.remove(), e.contentEl = void 0, 
+                e.placeholderEl = void 0; else for (;e.el && e.el.firstChild; ) e.el.removeChild(e.el.firstChild);
             }
             onSelectSlide(t, e, i) {
-                i.state === lt.Ready && this.playVideo();
+                i.state === rt.Ready && this.playVideo();
             }
             onUnselectSlide(t, e, i) {
                 var n, s;
-                if (i.type === Tt) {
+                if (i.type === Ct) {
                     try {
                         null === (s = null === (n = i.el) || void 0 === n ? void 0 : n.querySelector("video")) || void 0 === s || s.pause();
                     } catch (t) {}
                     return;
                 }
                 let o;
-                i.type === Ct ? o = {
+                i.type === Pt ? o = {
                     method: "pause",
                     value: "true"
-                } : i.type === Pt && (o = {
+                } : i.type === St && (o = {
                     event: "command",
                     func: "pauseVideo"
                 }), o && i.iframeEl && i.iframeEl.contentWindow && i.iframeEl.contentWindow.postMessage(JSON.stringify(o), "*"), 
@@ -26913,7 +26906,7 @@
                 this.instance.showLoading(t);
                 const i = this.instance, n = new XMLHttpRequest;
                 i.showLoading(t), n.onreadystatechange = function() {
-                    n.readyState === XMLHttpRequest.DONE && i.state === rt.Ready && (i.hideLoading(t), 
+                    n.readyState === XMLHttpRequest.DONE && i.state === at.Ready && (i.hideLoading(t), 
                     200 === n.status ? i.setContent(t, n.responseText) : i.setError(t, 404 === n.status ? "{{AJAX_NOT_FOUND}}" : "{{AJAX_FORBIDDEN}}"));
                 };
                 const s = t.ajax || null;
@@ -26961,7 +26954,7 @@
             }
             resizeIframe(t) {
                 const {type: e, iframeEl: i} = t;
-                if (e === Pt || e === Ct) return;
+                if (e === St || e === Pt) return;
                 const n = null == i ? void 0 : i.parentElement;
                 if (!i || !n) return;
                 let s = t.autoSize;
@@ -26972,7 +26965,7 @@
                 if (!1 !== t.preload && !1 !== s && r) try {
                     const t = window.getComputedStyle(n), e = parseFloat(t.paddingLeft) + parseFloat(t.paddingRight), s = parseFloat(t.paddingTop) + parseFloat(t.paddingBottom), l = i.contentWindow;
                     if (l) {
-                        const t = l.document, i = t.getElementsByTagName(xt)[0], n = t.body;
+                        const t = l.document, i = t.getElementsByTagName(wt)[0], n = t.body;
                         r.width = "", n.style.overflow = "hidden", o = o || i.scrollWidth + e, r.width = `${o}px`, 
                         n.style.overflow = "", r.flex = "0 0 auto", r.height = `${n.scrollHeight}px`, a = i.scrollHeight + s;
                     }
@@ -26993,7 +26986,7 @@
                 const {el: e} = t;
                 if (!e || !e.offsetParent) return;
                 if (!this.optionFor(t, "videoAutoplay")) return;
-                if (t.type === Tt) try {
+                if (t.type === Ct) try {
                     const t = e.querySelector("video");
                     if (t) {
                         const e = t.play();
@@ -27002,18 +26995,18 @@
                         }));
                     }
                 } catch (t) {}
-                if (t.type !== Pt && t.type !== Ct) return;
+                if (t.type !== St && t.type !== Pt) return;
                 const i = () => {
                     if (t.iframeEl && t.iframeEl.contentWindow) {
                         let e;
-                        if ("true" === t.iframeEl.dataset.ready) return e = t.type === Pt ? {
+                        if ("true" === t.iframeEl.dataset.ready) return e = t.type === St ? {
                             event: "command",
                             func: "playVideo"
                         } : {
                             method: "play",
                             value: "true"
                         }, e && t.iframeEl.contentWindow.postMessage(JSON.stringify(e), "*"), void (t.poller = void 0);
-                        t.type === Pt && (e = {
+                        t.type === St && (e = {
                             event: "listening",
                             id: t.iframeEl.getAttribute("id")
                         }, t.iframeEl.contentWindow.postMessage(JSON.stringify(e), "*"));
@@ -27023,12 +27016,12 @@
                 i();
             }
             processType(t) {
-                if (t.html) return t.type = xt, t.src = t.html, void (t.html = "");
+                if (t.html) return t.type = wt, t.src = t.html, void (t.html = "");
                 const e = this.instance.optionFor(t, "src", "");
                 if (!e || "string" != typeof e) return;
                 let i = t.type, n = null;
                 if (n = e.match(/(youtube\.com|youtu\.be|youtube\-nocookie\.com)\/(?:watch\?(?:.*&)?v=|v\/|u\/|shorts\/|embed\/?)?(videoseries\?list=(?:.*)|[\w-]{11}|\?listType=(?:.*)&list=(?:.*))(?:.*)/i)) {
-                    const s = this.optionFor(t, Pt), {nocookie: o} = s, a = function(t, e) {
+                    const s = this.optionFor(t, St), {nocookie: o} = s, a = function(t, e) {
                         var i = {};
                         for (var n in t) Object.prototype.hasOwnProperty.call(t, n) && e.indexOf(n) < 0 && (i[n] = t[n]);
                         if (null != t && "function" == typeof Object.getOwnPropertySymbols) {
@@ -27036,33 +27029,33 @@
                             for (n = Object.getOwnPropertySymbols(t); s < n.length; s++) e.indexOf(n[s]) < 0 && Object.prototype.propertyIsEnumerable.call(t, n[s]) && (i[n[s]] = t[n[s]]);
                         }
                         return i;
-                    }(s, [ "nocookie" ]), r = `www.youtube${o ? "-nocookie" : ""}.com`, l = Mt(e, a), c = encodeURIComponent(n[2]);
+                    }(s, [ "nocookie" ]), r = `www.youtube${o ? "-nocookie" : ""}.com`, l = Tt(e, a), c = encodeURIComponent(n[2]);
                     t.videoId = c, t.src = `https://${r}/embed/${c}?${l}`, t.thumbSrc = t.thumbSrc || `https://i.ytimg.com/vi/${c}/mqdefault.jpg`, 
-                    i = Pt;
+                    i = St;
                 } else if (n = e.match(/^.+vimeo.com\/(?:\/)?([\d]+)((\/|\?h=)([a-z0-9]+))?(.*)?/)) {
-                    const s = Mt(e, this.optionFor(t, Ct)), o = encodeURIComponent(n[1]), a = n[4] || "";
+                    const s = Tt(e, this.optionFor(t, Pt)), o = encodeURIComponent(n[1]), a = n[4] || "";
                     t.videoId = o, t.src = `https://player.vimeo.com/video/${o}?${a ? `h=${a}${s ? "&" : ""}` : ""}${s}`, 
-                    i = Ct;
+                    i = Pt;
                 }
                 if (!i && t.triggerEl) {
                     const e = t.triggerEl.dataset.type;
-                    At.includes(e) && (i = e);
+                    Ot.includes(e) && (i = e);
                 }
-                i || "string" == typeof e && ("#" === e.charAt(0) ? i = "inline" : (n = e.match(/\.(mp4|mov|ogv|webm)((\?|#).*)?$/i)) ? (i = Tt, 
-                t.videoFormat = t.videoFormat || "video/" + ("ogv" === n[1] ? "ogg" : n[1])) : e.match(/(^data:image\/[a-z0-9+\/=]*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg|ico)((\?|#).*)?$)/i) ? i = Et : e.match(/\.(pdf)((\?|#).*)?$/i) && (i = "pdf")), 
+                i || "string" == typeof e && ("#" === e.charAt(0) ? i = "inline" : (n = e.match(/\.(mp4|mov|ogv|webm)((\?|#).*)?$/i)) ? (i = Ct, 
+                t.videoFormat = t.videoFormat || "video/" + ("ogv" === n[1] ? "ogg" : n[1])) : e.match(/(^data:image\/[a-z0-9+\/=]*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg|ico)((\?|#).*)?$)/i) ? i = xt : e.match(/\.(pdf)((\?|#).*)?$/i) && (i = "pdf")), 
                 (n = e.match(/(?:maps\.)?google\.([a-z]{2,3}(?:\.[a-z]{2})?)\/(?:(?:(?:maps\/(?:place\/(?:.*)\/)?\@(.*),(\d+.?\d+?)z))|(?:\?ll=))(.*)?/i)) ? (t.src = `https://maps.google.${n[1]}/?ll=${(n[2] ? n[2] + "&z=" + Math.floor(parseFloat(n[3])) + (n[4] ? n[4].replace(/^\//, "&") : "") : n[4] + "").replace(/\?/, "&")}&output=${n[4] && n[4].indexOf("layer=c") > 0 ? "svembed" : "embed"}`, 
-                i = St) : (n = e.match(/(?:maps\.)?google\.([a-z]{2,3}(?:\.[a-z]{2})?)\/(?:maps\/search\/)(.*)/i)) && (t.src = `https://maps.google.${n[1]}/maps?q=${n[2].replace("query=", "q=").replace("api=1", "")}&output=embed`, 
-                i = St), i = i || this.instance.option("defaultType"), t.type = i, i === Et && (t.thumbSrc = t.thumbSrc || t.src);
+                i = Et) : (n = e.match(/(?:maps\.)?google\.([a-z]{2,3}(?:\.[a-z]{2})?)\/(?:maps\/search\/)(.*)/i)) && (t.src = `https://maps.google.${n[1]}/maps?q=${n[2].replace("query=", "q=").replace("api=1", "")}&output=embed`, 
+                i = Et), i = i || this.instance.option("defaultType"), t.type = i, i === xt && (t.thumbSrc = t.thumbSrc || t.src);
             }
             setContent(t) {
                 const e = this.instance.optionFor(t, "src") || "";
                 if (t && t.type && e) {
                     switch (t.type) {
-                      case xt:
+                      case wt:
                         this.instance.setContent(t, e);
                         break;
 
-                      case Tt:
+                      case Ct:
                         const i = this.option("videoTpl");
                         i && this.instance.setContent(t, i.replace(/\{\{src\}\}/gi, e + "").replace(/\{\{format\}\}/gi, this.optionFor(t, "videoFormat") || "").replace(/\{\{poster\}\}/gi, t.poster || t.thumbSrc || ""));
                         break;
@@ -27077,9 +27070,9 @@
                         break;
 
                       case "pdf":
+                      case Et:
                       case St:
                       case Pt:
-                      case Ct:
                         t.preload = !1;
 
                       case "iframe":
@@ -27090,7 +27083,7 @@
             }
             setAspectRatio(t) {
                 const e = t.contentEl;
-                if (!(t.el && e && t.type && [ Pt, Ct, Tt ].includes(t.type))) return;
+                if (!(t.el && e && t.type && [ St, Pt, Ct ].includes(t.type))) return;
                 let i, n = t.width || "auto", s = t.height || "auto";
                 if ("auto" === n || "auto" === s) {
                     i = this.optionFor(t, "videoRatio");
@@ -27119,20 +27112,20 @@
                 window.removeEventListener("message", t.onMessage);
             }
         }
-        Object.defineProperty(Lt, "defaults", {
+        Object.defineProperty(At, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: Ot
+            value: Mt
         });
-        const zt = "play", Rt = "pause", kt = "ready";
-        class It extends _ {
+        const Lt = "play", zt = "pause", Rt = "ready";
+        class kt extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "state", {
                     enumerable: !0,
                     configurable: !0,
                     writable: !0,
-                    value: kt
+                    value: Rt
                 }), Object.defineProperty(this, "inHover", {
                     enumerable: !0,
                     configurable: !0,
@@ -27151,7 +27144,7 @@
                 });
             }
             get isActive() {
-                return this.state !== kt;
+                return this.state !== Rt;
             }
             onReady(t) {
                 this.option("autoStart") && (t.isInfinite || t.page < t.pages.length - 1) && this.start();
@@ -27194,7 +27187,7 @@
                 if (e.pages.length < 2) return;
                 if (t.timer) return;
                 const i = t.option("timeout");
-                t.state = zt, P(e.container, "has-autoplay");
+                t.state = Lt, P(e.container, "has-autoplay");
                 let n = t.createProgressBar();
                 n && (n.style.transitionDuration = `${i}ms`, n.style.transform = "scaleX(1)"), t.timer = setTimeout((() => {
                     t.timer = null, t.inHover || t.onTimerEnd();
@@ -27206,7 +27199,7 @@
             }
             start() {
                 const t = this;
-                if (t.set(), t.state !== kt) {
+                if (t.set(), t.state !== Rt) {
                     if (t.option("pauseOnHover")) {
                         const e = t.instance.container;
                         e.addEventListener("mouseenter", t.onMouseEnter, !1), e.addEventListener("mouseleave", t.onMouseLeave, !1);
@@ -27216,18 +27209,18 @@
             }
             stop() {
                 const t = this, e = t.state, i = t.instance.container;
-                t.clear(), t.state = kt, i.removeEventListener("mouseenter", t.onMouseEnter, !1), 
+                t.clear(), t.state = Rt, i.removeEventListener("mouseenter", t.onMouseEnter, !1), 
                 i.removeEventListener("mouseleave", t.onMouseLeave, !1), document.removeEventListener("visibilitychange", t.onVisibilityChange, !1), 
-                S(i, "has-autoplay"), e !== kt && t.emit("stop");
+                S(i, "has-autoplay"), e !== Rt && t.emit("stop");
             }
             pause() {
                 const t = this;
-                t.state === zt && (t.state = Rt, t.clear(), t.emit(Rt));
+                t.state === Lt && (t.state = zt, t.clear(), t.emit(zt));
             }
             resume() {
                 const t = this, e = t.instance;
-                if (e.isInfinite || e.page !== e.pages.length - 1) if (t.state !== zt) {
-                    if (t.state === Rt && !t.inHover) {
+                if (e.isInfinite || e.page !== e.pages.length - 1) if (t.state !== Lt) {
+                    if (t.state === zt && !t.inHover) {
                         const e = new Event("resume", {
                             bubbles: !0,
                             cancelable: !0
@@ -27237,7 +27230,7 @@
                 } else t.set(); else t.stop();
             }
             toggle() {
-                this.state === zt || this.state === Rt ? this.stop() : this.start();
+                this.state === Lt || this.state === zt ? this.stop() : this.start();
             }
             attach() {
                 const t = this, e = t.instance;
@@ -27250,7 +27243,7 @@
                 e.off("Panzoom.touchMove", t.onChange), t.stop();
             }
         }
-        Object.defineProperty(It, "defaults", {
+        Object.defineProperty(kt, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
@@ -27262,7 +27255,7 @@
                 timeout: 3e3
             }
         });
-        class Dt extends _ {
+        class It extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "ref", {
                     enumerable: !0,
@@ -27287,18 +27280,18 @@
                         },
                         set: e => {
                             var n;
-                            i.classList.add("has-slideshow"), (null === (n = t.getSlide()) || void 0 === n ? void 0 : n.state) !== lt.Ready && e.pause();
+                            i.classList.add("has-slideshow"), (null === (n = t.getSlide()) || void 0 === n ? void 0 : n.state) !== rt.Ready && e.pause();
                         },
                         stop: () => {
                             i.classList.remove("has-slideshow"), t.isCompact || t.endIdle(), t.emit("endSlideshow");
                         },
                         resume: (e, i) => {
                             var n, s, o;
-                            !i || !i.cancelable || (null === (n = t.getSlide()) || void 0 === n ? void 0 : n.state) === lt.Ready && (null === (o = null === (s = t.carousel) || void 0 === s ? void 0 : s.panzoom) || void 0 === o ? void 0 : o.isResting) || i.preventDefault();
+                            !i || !i.cancelable || (null === (n = t.getSlide()) || void 0 === n ? void 0 : n.state) === rt.Ready && (null === (o = null === (s = t.carousel) || void 0 === s ? void 0 : s.panzoom) || void 0 === o ? void 0 : o.isResting) || i.preventDefault();
                         }
                     }
                 }), e.attachPlugins({
-                    Autoplay: It
+                    Autoplay: kt
                 }), this.ref = e.plugins.Autoplay);
             }
             onReady(t) {
@@ -27329,7 +27322,7 @@
                 e.off("keydown", t.onKeydown);
             }
         }
-        Object.defineProperty(Dt, "defaults", {
+        Object.defineProperty(It, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
@@ -27343,7 +27336,7 @@
                 timeout: 3e3
             }
         });
-        const Ft = {
+        const Dt = {
             classes: {
                 container: "f-thumbs f-carousel__thumbs",
                 viewport: "f-thumbs__viewport",
@@ -27359,12 +27352,12 @@
             thumbTpl: '<button class="f-thumbs__slide__button" tabindex="0" type="button" aria-label="{{GOTO}}" data-carousel-index="%i"><img class="f-thumbs__slide__img" data-lazy-src="{{%s}}" alt="" /></button>',
             type: "modern"
         };
-        var jt;
+        var Ft;
         !function(t) {
             t[t.Init = 0] = "Init", t[t.Ready = 1] = "Ready", t[t.Hidden = 2] = "Hidden";
-        }(jt || (jt = {}));
-        const Bt = "isResting", Ht = "thumbWidth", Nt = "thumbHeight", _t = "thumbClipWidth";
-        let $t = class extends _ {
+        }(Ft || (Ft = {}));
+        const jt = "isResting", Bt = "thumbWidth", Ht = "thumbHeight", Nt = "thumbClipWidth";
+        let _t = class extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "type", {
                     enumerable: !0,
@@ -27415,7 +27408,7 @@
                     enumerable: !0,
                     configurable: !0,
                     writable: !0,
-                    value: jt.Init
+                    value: Ft.Init
                 });
             }
             get isModern() {
@@ -27423,8 +27416,8 @@
             }
             onInitSlide(t, e) {
                 const i = e.el ? e.el.dataset : void 0;
-                i && (e.thumbSrc = i.thumbSrc || e.thumbSrc || "", e[_t] = parseFloat(i[_t] || "") || e[_t] || 0, 
-                e[Nt] = parseFloat(i.thumbHeight || "") || e[Nt] || 0), this.addSlide(e);
+                i && (e.thumbSrc = i.thumbSrc || e.thumbSrc || "", e[Nt] = parseFloat(i[Nt] || "") || e[Nt] || 0, 
+                e[Ht] = parseFloat(i.thumbHeight || "") || e[Ht] || 0), this.addSlide(e);
             }
             onInitSlides() {
                 this.build();
@@ -27435,15 +27428,15 @@
                 const e = this.container, i = this.instance, n = i.panzoom, s = this.carousel, a = s ? s.panzoom : null, r = i.page;
                 if (n && s && a) {
                     if (n.isDragging) {
-                        S(e, this.cn(Bt));
+                        S(e, this.cn(jt));
                         let n = (null === (t = s.pages[r]) || void 0 === t ? void 0 : t.pos) || 0;
-                        n += i.getProgress(r) * (this[_t] + this.thumbGap);
+                        n += i.getProgress(r) * (this[Nt] + this.thumbGap);
                         let o = a.getBounds();
                         -1 * n > o.x.min && -1 * n < o.x.max && a.panTo({
                             x: -1 * n,
                             friction: .12
                         });
-                    } else o(e, this.cn(Bt), n.isResting);
+                    } else o(e, this.cn(jt), n.isResting);
                     this.shiftModern();
                 }
             }
@@ -27479,18 +27472,18 @@
                 return t;
             }
             resizeModernSlide(t) {
-                this.isModern && (t[Ht] = t[_t] && t[Nt] ? Math.round(this[Nt] * (t[_t] / t[Nt])) : this[Ht]);
+                this.isModern && (t[Bt] = t[Nt] && t[Ht] ? Math.round(this[Ht] * (t[Nt] / t[Ht])) : this[Bt]);
             }
             updateProps() {
                 const t = this.container;
                 if (!t) return;
                 const e = e => parseFloat(getComputedStyle(t).getPropertyValue("--f-thumb-" + e)) || 0;
-                this.thumbGap = e("gap"), this.thumbExtraGap = e("extra-gap"), this[Ht] = e("width") || 40, 
-                this[_t] = e("clip-width") || 40, this[Nt] = e("height") || 40;
+                this.thumbGap = e("gap"), this.thumbExtraGap = e("extra-gap"), this[Bt] = e("width") || 40, 
+                this[Nt] = e("clip-width") || 40, this[Ht] = e("height") || 40;
             }
             build() {
                 const t = this;
-                if (t.state !== jt.Init) return;
+                if (t.state !== Ft.Init) return;
                 if (t.isDisabled()) return void t.emit("disabled");
                 const e = t.instance, i = e.container, n = t.getSlides(), s = t.option("type");
                 t.type = s;
@@ -27536,7 +27529,7 @@
                     t.shiftModern();
                 })), d.on("Panzoom.click", ((e, i, n) => {
                     t.onClick(n);
-                })), t.carousel = d, t.state = jt.Ready;
+                })), t.carousel = d, t.state = Ft.Ready;
             }
             onClick(t) {
                 t.preventDefault(), t.stopPropagation();
@@ -27552,7 +27545,7 @@
                 };
                 let [a, r] = s(t.target);
                 if (a > -1) return;
-                const l = this[_t], c = t.clientX, h = t.clientY;
+                const l = this[Nt], c = t.clientX, h = t.clientY;
                 let [d, u] = o(c - l, h), [p, f] = o(c + l, h);
                 u && f ? (a = Math.abs(c - u.getBoundingClientRect().right) < Math.abs(c - f.getBoundingClientRect().left) ? d : p, 
                 a === n && (a = a === d ? p : d)) : u ? a = d : f && (a = p), a > -1 && i[a] && e.slideTo(a);
@@ -27561,7 +27554,7 @@
                 var e;
                 const i = this, {instance: n} = i, s = i.carousel;
                 if (!n || !s) return 0;
-                const o = i[Ht], a = i[_t], r = i.thumbGap, l = i.thumbExtraGap;
+                const o = i[Bt], a = i[Nt], r = i.thumbGap, l = i.thumbExtraGap;
                 if (!(null === (e = s.slides[t]) || void 0 === e ? void 0 : e.el)) return 0;
                 const c = .5 * (o - a), h = n.pages.length - 1;
                 let d = n.getProgress(0), u = n.getProgress(h), p = n.getProgress(t, !1, !0), f = 0, g = c + l + r;
@@ -27590,18 +27583,18 @@
                 if (!(e && i && n && s)) return;
                 if (n.state === m.Init || n.state === m.Destroy) return;
                 for (const i of e.slides) t.setProps(i.index);
-                let o = (t[_t] + t.thumbGap) * (s.slides.length || 0);
+                let o = (t[Nt] + t.thumbGap) * (s.slides.length || 0);
                 i.style.setProperty("--width", o + "");
             }
             cleanup() {
                 const t = this;
                 t.carousel && t.carousel.destroy(), t.carousel = null, t.container && t.container.remove(), 
-                t.container = null, t.track && t.track.remove(), t.track = null, t.state = jt.Init, 
+                t.container = null, t.track && t.track.remove(), t.track = null, t.state = Ft.Init, 
                 S(t.instance.container, t.cn("hasThumbs"));
             }
             attach() {
                 const t = this, e = t.instance;
-                e.on("initSlide", t.onInitSlide), e.state === B.Init ? e.on("initSlides", t.onInitSlides) : t.onInitSlides(), 
+                e.on("initSlide", t.onInitSlide), e.state === j.Init ? e.on("initSlides", t.onInitSlides) : t.onInitSlides(), 
                 e.on([ "change", "Panzoom.afterTransform" ], t.onChange), e.on("Panzoom.refresh", t.onRefresh);
             }
             detach() {
@@ -27610,18 +27603,18 @@
                 e.off("Panzoom.refresh", t.onRefresh), t.cleanup();
             }
         };
-        Object.defineProperty($t, "defaults", {
+        Object.defineProperty(_t, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: Ft
+            value: Dt
         });
-        const Wt = Object.assign(Object.assign({}, Ft), {
+        const $t = Object.assign(Object.assign({}, Dt), {
             key: "t",
             showOnStart: !0,
             parentEl: null
-        }), Xt = "is-masked", qt = "aria-hidden";
-        class Yt extends _ {
+        }), Wt = "is-masked", Xt = "aria-hidden";
+        class qt extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "ref", {
                     enumerable: !0,
@@ -27684,8 +27677,8 @@
                     click: this.onClick,
                     createSlide: this.onCreateSlide
                 }), n.options.Thumbs = o, n.attachPlugins({
-                    Thumbs: $t
-                }), e.ref = n.plugins.Thumbs, e.option("showOnStart") || (e.ref.state = jt.Hidden, 
+                    Thumbs: _t
+                }), e.ref = n.plugins.Thumbs, e.option("showOnStart") || (e.ref.state = Ft.Hidden, 
                 e.hidden = !0);
             }
             onResize() {
@@ -27699,18 +27692,18 @@
             }
             toggle() {
                 const t = this.ref;
-                if (t && !t.isDisabled()) return t.state === jt.Hidden ? (t.state = jt.Init, void t.build()) : void (this.hidden ? this.show() : this.hide());
+                if (t && !t.isDisabled()) return t.state === Ft.Hidden ? (t.state = Ft.Init, void t.build()) : void (this.hidden ? this.show() : this.hide());
             }
             show() {
                 const t = this.ref;
                 if (!t || t.isDisabled()) return;
                 const e = t.container;
-                e && (this.refresh(), e.offsetHeight, e.removeAttribute(qt), e.classList.remove(Xt), 
+                e && (this.refresh(), e.offsetHeight, e.removeAttribute(Xt), e.classList.remove(Wt), 
                 this.hidden = !1);
             }
             hide() {
                 const t = this.ref, e = t && t.container;
-                e && (this.refresh(), e.offsetHeight, e.classList.add(Xt), e.setAttribute(qt, "true")), 
+                e && (this.refresh(), e.offsetHeight, e.classList.add(Wt), e.setAttribute(Xt, "true")), 
                 this.hidden = !0;
             }
             refresh() {
@@ -27721,7 +27714,7 @@
             }
             attach() {
                 const t = this, e = t.instance;
-                e.state === rt.Init ? e.on("Carousel.init", t.onInit) : t.onInit(), e.on("resize", t.onResize), 
+                e.state === at.Init ? e.on("Carousel.init", t.onInit) : t.onInit(), e.on("resize", t.onResize), 
                 e.on("keydown", t.onKeydown);
             }
             detach() {
@@ -27731,13 +27724,13 @@
                 null === (t = i.carousel) || void 0 === t || t.detachPlugins([ "Thumbs" ]), e.ref = null;
             }
         }
-        Object.defineProperty(Yt, "defaults", {
+        Object.defineProperty(qt, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: Wt
+            value: $t
         });
-        const Vt = {
+        const Yt = {
             panLeft: {
                 icon: '<svg><path d="M5 12h14M5 12l6 6M5 12l6-6"/></svg>',
                 change: {
@@ -27815,11 +27808,11 @@
                 action: "toggleFS"
             }
         };
-        var Zt;
+        var Vt;
         !function(t) {
             t[t.Init = 0] = "Init", t[t.Ready = 1] = "Ready", t[t.Disabled = 2] = "Disabled";
-        }(Zt || (Zt = {}));
-        const Ut = {
+        }(Vt || (Vt = {}));
+        const Zt = {
             absolute: "auto",
             display: {
                 left: [ "infobar" ],
@@ -27854,20 +27847,20 @@
                 }
             },
             parentEl: null
-        }, Gt = {
+        }, Ut = {
             tabindex: "-1",
             width: "24",
             height: "24",
             viewBox: "0 0 24 24",
             xmlns: "http://www.w3.org/2000/svg"
-        }, Kt = "has-toolbar", Jt = "fancybox__toolbar";
-        class Qt extends _ {
+        }, Gt = "has-toolbar", Kt = "fancybox__toolbar";
+        class Jt extends N {
             constructor() {
                 super(...arguments), Object.defineProperty(this, "state", {
                     enumerable: !0,
                     configurable: !0,
                     writable: !0,
-                    value: Zt.Init
+                    value: Vt.Init
                 }), Object.defineProperty(this, "container", {
                     enumerable: !0,
                     configurable: !0,
@@ -27900,12 +27893,12 @@
                 if (o && (r = this.createContainer()), r) {
                     for (const [t, e] of Object.entries(a)) {
                         const i = document.createElement("div");
-                        P(i, Jt + "__column is-" + t);
+                        P(i, Kt + "__column is-" + t);
                         for (const t of e) i.appendChild(t);
                         "auto" !== n || "middle" !== t || e.length || (n = !0), r.appendChild(i);
                     }
-                    !0 === n && P(r, "is-absolute"), this.state = Zt.Ready, this.onRefresh();
-                } else this.state = Zt.Disabled;
+                    !0 === n && P(r, "is-absolute"), this.state = Vt.Ready, this.onRefresh();
+                } else this.state = Vt.Disabled;
             }
             onClick(t) {
                 var e, i;
@@ -27938,7 +27931,7 @@
                 const t = this.container;
                 if (!t) return;
                 const e = this.instance.getSlide();
-                if (!e || e.state !== lt.Ready) return;
+                if (!e || e.state !== rt.Ready) return;
                 const i = e && !e.error && e.panzoom;
                 for (const e of t.querySelectorAll("[data-panzoom-action]")) i ? (e.removeAttribute("disabled"), 
                 e.removeAttribute("tabindex")) : (e.setAttribute("disabled", ""), e.setAttribute("tabindex", "-1"));
@@ -27964,31 +27957,31 @@
                 const t = this.instance.container;
                 if (!t) return null;
                 const e = this.option("parentEl") || t;
-                let i = e.querySelector("." + Jt);
-                return i || (i = document.createElement("div"), P(i, Jt), e.prepend(i)), i.addEventListener("click", this.onClick, {
+                let i = e.querySelector("." + Kt);
+                return i || (i = document.createElement("div"), P(i, Kt), e.prepend(i)), i.addEventListener("click", this.onClick, {
                     passive: !1,
                     capture: !0
-                }), t && P(t, Kt), this.container = i, i;
+                }), t && P(t, Gt), this.container = i, i;
             }
             createEl(t) {
                 const e = this.instance, i = e.carousel;
                 if (!i) return null;
                 if ("toggleFS" === t) return null;
-                if ("fullscreen" === t && !ot()) return null;
+                if ("fullscreen" === t && !st()) return null;
                 let s = null;
                 const o = i.slides.length || 0;
                 let a = 0, r = 0;
                 for (const t of i.slides) (t.panzoom || "image" === t.type) && a++, ("image" === t.type || t.downloadSrc) && r++;
                 if (o < 2 && [ "infobar", "prev", "next" ].includes(t)) return s;
-                if (void 0 !== Vt[t] && !a) return null;
+                if (void 0 !== Yt[t] && !a) return null;
                 if ("download" === t && !r) return null;
                 if ("thumbs" === t) {
                     const t = e.plugins.Thumbs;
                     if (!t || !t.isEnabled) return null;
                 }
                 if ("slideshow" === t) if (!i.plugins.Autoplay || o < 2) return null;
-                if (void 0 !== Vt[t]) {
-                    const e = Vt[t];
+                if (void 0 !== Yt[t]) {
+                    const e = Yt[t];
                     s = document.createElement("button"), s.setAttribute("title", this.instance.localize(`{{${t.toUpperCase()}}}`)), 
                     P(s, "f-button"), e.action && (s.dataset.panzoomAction = e.action), e.change && (s.dataset.panzoomChange = JSON.stringify(e.change)), 
                     s.appendChild(n(this.instance.localize(e.icon)));
@@ -27999,14 +27992,14 @@
                     })));
                 }
                 const l = null == s ? void 0 : s.querySelector("svg");
-                if (l) for (const [t, e] of Object.entries(Gt)) l.getAttribute(t) || l.setAttribute(t, String(e));
+                if (l) for (const [t, e] of Object.entries(Ut)) l.getAttribute(t) || l.setAttribute(t, String(e));
                 return s;
             }
             removeContainer() {
                 const t = this.container;
-                t && t.remove(), this.container = null, this.state = Zt.Disabled;
+                t && t.remove(), this.container = null, this.state = Vt.Disabled;
                 const e = this.instance.container;
-                e && S(e, Kt);
+                e && S(e, Gt);
             }
             attach() {
                 const t = this, e = t.instance;
@@ -28019,33 +28012,33 @@
                 t.removeContainer();
             }
         }
-        Object.defineProperty(Qt, "defaults", {
+        Object.defineProperty(Jt, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: Ut
+            value: Zt
         });
-        const te = {
-            Hash: class extends _ {
+        const Qt = {
+            Hash: class extends N {
                 onReady() {
-                    ht = !1;
+                    ct = !1;
                 }
                 onChange(t) {
-                    ut && clearTimeout(ut);
-                    const {hash: e} = pt(), {hash: i} = ft(), n = t.isOpeningSlide(t.getSlide());
-                    n && (ct = i === e ? "" : i), e && e !== i && (ut = setTimeout((() => {
+                    dt && clearTimeout(dt);
+                    const {hash: e} = ut(), {hash: i} = pt(), n = t.isOpeningSlide(t.getSlide());
+                    n && (lt = i === e ? "" : i), e && e !== i && (dt = setTimeout((() => {
                         try {
-                            if (t.state === rt.Ready) {
+                            if (t.state === at.Ready) {
                                 let t = "replaceState";
-                                n && !dt && (t = "pushState", dt = !0), window.history[t]({}, document.title, window.location.pathname + window.location.search + e);
+                                n && !ht && (t = "pushState", ht = !0), window.history[t]({}, document.title, window.location.pathname + window.location.search + e);
                             }
                         } catch (t) {}
                     }), 300));
                 }
                 onClose(t) {
-                    if (ut && clearTimeout(ut), !ht && dt) return dt = !1, ht = !1, void window.history.back();
-                    if (!ht) try {
-                        window.history.replaceState({}, document.title, window.location.pathname + window.location.search + (ct || ""));
+                    if (dt && clearTimeout(dt), !ct && ht) return ht = !1, ct = !1, void window.history.back();
+                    if (!ct) try {
+                        window.history.replaceState({}, document.title, window.location.pathname + window.location.search + (lt || ""));
                     } catch (t) {}
                 }
                 attach() {
@@ -28059,28 +28052,28 @@
                     t.off("close", this.onClose);
                 }
                 static parseURL() {
-                    return ft();
+                    return pt();
                 }
                 static startFromUrl() {
-                    gt();
+                    ft();
                 }
                 static destroy() {
-                    window.removeEventListener("hashchange", vt, !1);
+                    window.removeEventListener("hashchange", mt, !1);
                 }
             },
-            Html: Lt,
-            Images: wt,
-            Slideshow: Dt,
-            Thumbs: Yt,
-            Toolbar: Qt
-        }, ee = "with-fancybox", ie = "hide-scrollbar", ne = "--fancybox-scrollbar-compensate", se = "--fancybox-body-margin", oe = "aria-hidden", ae = "is-using-tab", re = "is-animated", le = "is-compact", ce = "is-loading", he = "is-opening", de = "has-caption", ue = "disabled", pe = "tabindex", fe = "download", ge = "href", me = "src", ve = t => "string" == typeof t, be = function() {
+            Html: At,
+            Images: yt,
+            Slideshow: It,
+            Thumbs: qt,
+            Toolbar: Jt
+        }, te = "with-fancybox", ee = "hide-scrollbar", ie = "--fancybox-scrollbar-compensate", ne = "--fancybox-body-margin", se = "aria-hidden", oe = "is-using-tab", ae = "is-animated", re = "is-compact", le = "is-loading", ce = "is-opening", he = "has-caption", de = "disabled", ue = "tabindex", pe = "download", fe = "href", ge = "src", me = t => "string" == typeof t, ve = function() {
             var t = window.getSelection();
             return !!t && "Range" === t.type;
         };
-        let ye, we = null, xe = null, Ee = 0, Se = 0, Pe = 0, Ce = 0;
-        const Te = new Map;
-        let Me = 0;
-        class Oe extends g {
+        let be, ye = null, we = null, xe = 0, Ee = 0;
+        const Se = new Map;
+        let Pe = 0;
+        class Ce extends g {
             get isIdle() {
                 return this.idle;
             }
@@ -28132,7 +28125,7 @@
                     enumerable: !0,
                     configurable: !0,
                     writable: !0,
-                    value: rt.Init
+                    value: at.Init
                 }), Object.defineProperty(this, "id", {
                     enumerable: !0,
                     configurable: !0,
@@ -28168,58 +28161,54 @@
                     configurable: !0,
                     writable: !0,
                     value: void 0
-                }), ye || (ye = ot()), this.id = e.id || ++Me, Te.set(this.id, this), this.userSlides = t, 
+                }), be || (be = st()), this.id = e.id || ++Pe, Se.set(this.id, this), this.userSlides = t, 
                 this.userPlugins = i, queueMicrotask((() => {
                     this.init();
                 }));
             }
             init() {
-                if (this.state === rt.Destroy) return;
-                this.state = rt.Init, this.attachPlugins(Object.assign(Object.assign({}, Oe.Plugins), this.userPlugins)), 
+                if (this.state === at.Destroy) return;
+                this.state = at.Init, this.attachPlugins(Object.assign(Object.assign({}, Ce.Plugins), this.userPlugins)), 
                 this.emit("init"), this.emit("attachPlugins"), !0 === this.option("hideScrollbar") && (() => {
-                    if (!et) return;
+                    if (!tt) return;
                     const t = document, e = t.body, i = t.documentElement;
-                    if (e.classList.contains(ie)) return;
+                    if (e.classList.contains(ee)) return;
                     let n = window.innerWidth - i.getBoundingClientRect().width;
                     const s = parseFloat(window.getComputedStyle(e).marginRight);
-                    n < 0 && (n = 0), i.style.setProperty(ne, `${n}px`), s && e.style.setProperty(se, `${s}px`), 
-                    e.classList.add(ie);
+                    n < 0 && (n = 0), i.style.setProperty(ie, `${n}px`), s && e.style.setProperty(ne, `${s}px`), 
+                    e.classList.add(ee);
                 })(), this.initLayout(), this.scale();
                 const t = () => {
-                    this.initCarousel(this.userSlides), this.state = rt.Ready, this.attachEvents(), 
+                    this.initCarousel(this.userSlides), this.state = at.Ready, this.attachEvents(), 
                     this.emit("ready"), setTimeout((() => {
-                        this.container && this.container.setAttribute(oe, "false");
+                        this.container && this.container.setAttribute(se, "false");
                     }), 16);
                 };
-                this.option("Fullscreen.autoStart") && ye && !ye.isFullscreen() ? ye.request().then((() => {
+                this.option("Fullscreen.autoStart") && be && !be.isFullscreen() ? be.request().then((() => {
                     this.startedFs = !0, t();
                 })).catch((() => t())) : t();
             }
             initLayout() {
                 var t, e;
                 const i = this.option("parentEl") || document.body, s = n(this.localize(this.option("tpl.main") || ""));
-                if (s) {
-                    if (s.setAttribute("id", `fancybox-${this.id}`), s.setAttribute("aria-label", this.localize("{{MODAL}}")), 
-                    s.classList.toggle(le, this.isCompact), P(s, this.option("mainClass") || ""), P(s, he), 
-                    this.container = s, this.footer = s.querySelector(".fancybox__footer"), i.appendChild(s), 
-                    P(document.documentElement, ee), we && xe || (we = document.createElement("span"), 
-                    P(we, "fancybox-focus-guard"), we.setAttribute(pe, "0"), we.setAttribute(oe, "true"), 
-                    we.setAttribute("aria-label", "Focus guard"), xe = we.cloneNode(), null === (t = s.parentElement) || void 0 === t || t.insertBefore(we, s), 
-                    null === (e = s.parentElement) || void 0 === e || e.append(xe)), s.addEventListener("mousedown", (t => {
-                        Ee = t.pageX, Se = t.pageY, S(s, ae);
-                    })), this.option("closeExisting")) for (const t of Te.values()) t.id !== this.id && t.close(); else this.option("animated") && (P(s, re), 
-                    setTimeout((() => {
-                        this.isClosing() || S(s, re);
-                    }), 350));
-                    this.emit("initLayout");
-                }
+                s && (s.setAttribute("id", `fancybox-${this.id}`), s.setAttribute("aria-label", this.localize("{{MODAL}}")), 
+                s.classList.toggle(re, this.isCompact), P(s, this.option("mainClass") || ""), P(s, ce), 
+                this.container = s, this.footer = s.querySelector(".fancybox__footer"), i.appendChild(s), 
+                P(document.documentElement, te), ye && we || (ye = document.createElement("span"), 
+                P(ye, "fancybox-focus-guard"), ye.setAttribute(ue, "0"), ye.setAttribute(se, "true"), 
+                ye.setAttribute("aria-label", "Focus guard"), we = ye.cloneNode(), null === (t = s.parentElement) || void 0 === t || t.insertBefore(ye, s), 
+                null === (e = s.parentElement) || void 0 === e || e.append(we)), s.addEventListener("mousedown", (t => {
+                    xe = t.pageX, Ee = t.pageY, S(s, oe);
+                })), this.option("animated") && (P(s, ae), setTimeout((() => {
+                    this.isClosing() || S(s, ae);
+                }), 350)), this.emit("initLayout"));
             }
             initCarousel(t) {
                 const i = this.container;
                 if (!i) return;
                 const n = i.querySelector(".fancybox__carousel");
                 if (!n) return;
-                const s = this.carousel = new Q(n, u({}, {
+                const s = this.carousel = new J(n, u({}, {
                     slides: t,
                     transition: "fade",
                     Panzoom: {
@@ -28282,20 +28271,20 @@
                     for (const i of e.querySelectorAll("[data-fancybox-current-index]")) i.innerHTML = t.page + 1;
                     for (const i of e.querySelectorAll("[data-fancybox-count]")) i.innerHTML = t.pages.length;
                     if (!t.isInfinite) {
-                        for (const i of e.querySelectorAll("[data-fancybox-next]")) t.page < t.pages.length - 1 ? (i.removeAttribute(ue), 
-                        i.removeAttribute(pe)) : (i.setAttribute(ue, ""), i.setAttribute(pe, "-1"));
-                        for (const i of e.querySelectorAll("[data-fancybox-prev]")) t.page > 0 ? (i.removeAttribute(ue), 
-                        i.removeAttribute(pe)) : (i.setAttribute(ue, ""), i.setAttribute(pe, "-1"));
+                        for (const i of e.querySelectorAll("[data-fancybox-next]")) t.page < t.pages.length - 1 ? (i.removeAttribute(de), 
+                        i.removeAttribute(ue)) : (i.setAttribute(de, ""), i.setAttribute(ue, "-1"));
+                        for (const i of e.querySelectorAll("[data-fancybox-prev]")) t.page > 0 ? (i.removeAttribute(de), 
+                        i.removeAttribute(ue)) : (i.setAttribute(de, ""), i.setAttribute(ue, "-1"));
                     }
                     const i = this.getSlide();
                     if (!i) return;
                     let n = i.downloadSrc || "";
-                    n || "image" !== i.type || i.error || !ve(i[me]) || (n = i[me]);
+                    n || "image" !== i.type || i.error || !me(i[ge]) || (n = i[ge]);
                     for (const t of e.querySelectorAll("[data-fancybox-download]")) {
                         const e = i.downloadFilename;
-                        n ? (t.removeAttribute(ue), t.removeAttribute(pe), t.setAttribute(ge, n), t.setAttribute(fe, e || n), 
-                        t.setAttribute("target", "_blank")) : (t.setAttribute(ue, ""), t.setAttribute(pe, "-1"), 
-                        t.removeAttribute(ge), t.removeAttribute(fe));
+                        n ? (t.removeAttribute(de), t.removeAttribute(ue), t.setAttribute(fe, n), t.setAttribute(pe, e || n), 
+                        t.setAttribute("target", "_blank")) : (t.setAttribute(de, ""), t.setAttribute(ue, "-1"), 
+                        t.removeAttribute(fe), t.removeAttribute(pe));
                     }
                 })), this.emit("initCarousel");
             }
@@ -28355,9 +28344,9 @@
                 if (s.closest("[data-fancybox-prev]")) return t.preventDefault(), void this.prev();
                 if (s.closest("[data-fancybox-next]")) return t.preventDefault(), void this.next();
                 if ("click" === t.type && 0 === t.detail) return;
-                if (Math.abs(t.pageX - Ee) > 30 || Math.abs(t.pageY - Se) > 30) return;
+                if (Math.abs(t.pageX - xe) > 30 || Math.abs(t.pageY - Ee) > 30) return;
                 const o = document.activeElement;
-                if (be() && o && i.contains(o)) return;
+                if (ve() && o && i.contains(o)) return;
                 if (n && "image" === (null === (e = this.getSlide()) || void 0 === e ? void 0 : e.type)) return void (this.clickTimer ? (clearTimeout(this.clickTimer), 
                 this.clickTimer = null) : this.clickTimer = setTimeout((() => {
                     this.toggleIdle(), this.clickTimer = null;
@@ -28367,11 +28356,11 @@
                 if (s.closest(".fancybox__content")) {
                     if (o) {
                         if (o.closest("[contenteditable]")) return;
-                        s.matches(nt) || o.blur();
+                        s.matches(it) || o.blur();
                     }
-                    if (be()) return;
+                    if (ve()) return;
                     a = this.option("contentClick");
-                } else s.closest(".fancybox__carousel") && !s.matches(nt) && (a = this.option("backdropClick"));
+                } else s.closest(".fancybox__carousel") && !s.matches(it) && (a = this.option("backdropClick"));
                 "close" === a ? (t.preventDefault(), this.close(t)) : "next" === a ? (t.preventDefault(), 
                 this.next()) : "prev" === a && (t.preventDefault(), this.prev());
             }
@@ -28386,9 +28375,6 @@
                 t.defaultPrevented || ("close" === n ? (t.preventDefault(), this.close(t)) : "slide" === n && (i(e) || (t.preventDefault(), 
                 this[a > 0 ? "prev" : "next"]()))));
             }
-            onScroll() {
-                window.scrollTo(Pe, Ce);
-            }
             onKeydown(t) {
                 if (!this.isTopmost()) return;
                 this.isCompact || !this.option("idle") || this.isClosing() || this.resetIdle();
@@ -28396,7 +28382,7 @@
                 if (!i) return;
                 const n = t.composedPath()[0], s = document.activeElement && document.activeElement.classList, o = s && s.contains("f-button") || n.dataset.carouselPage || n.dataset.carouselIndex;
                 if ("Escape" !== e && !o && E(n)) if (n.isContentEditable || -1 !== [ "TEXTAREA", "OPTION", "INPUT", "SELECT", "VIDEO" ].indexOf(n.nodeName)) return;
-                if ("Tab" === t.key ? P(this.container, ae) : S(this.container, ae), t.ctrlKey || t.altKey || t.shiftKey) return;
+                if ("Tab" === t.key ? P(this.container, oe) : S(this.container, oe), t.ctrlKey || t.altKey || t.shiftKey) return;
                 this.emit("keydown", e, t);
                 const a = i[e];
                 a && "function" == typeof this[a] && (t.preventDefault(), this[a]());
@@ -28405,7 +28391,7 @@
                 const t = this.container;
                 if (!t) return;
                 const e = this.isCompact;
-                t.classList.toggle(le, e), this.manageCaption(this.getSlide()), this.isCompact ? this.clearIdle() : this.endIdle(), 
+                t.classList.toggle(re, e), this.manageCaption(this.getSlide()), this.isCompact ? this.clearIdle() : this.endIdle(), 
                 this.scale(), this.emit("resize");
             }
             onFocus(t) {
@@ -28421,7 +28407,7 @@
                 const e = this.optionFor(t, "closeButton") || !1;
                 if ("auto" === e) {
                     const t = this.plugins.Toolbar;
-                    if (t && t.state === Zt.Ready) return;
+                    if (t && t.state === Vt.Ready) return;
                 }
                 if (!e) return;
                 if (!t.contentEl || t.closeBtnEl) return;
@@ -28435,11 +28421,11 @@
                 var e, i;
                 const n = "fancybox__caption", s = this.container;
                 if (!s) return;
-                S(s, de);
+                S(s, he);
                 const o = this.isCompact || this.option("commonCaption"), a = !o;
                 if (this.caption && this.stop(this.caption), a && this.caption && (this.caption.remove(), 
                 this.caption = null), o && !this.caption) for (const t of (null === (e = this.carousel) || void 0 === e ? void 0 : e.slides) || []) t.captionEl && (t.captionEl.remove(), 
-                t.captionEl = void 0, S(t.el, de), null === (i = t.el) || void 0 === i || i.removeAttribute("aria-labelledby"));
+                t.captionEl = void 0, S(t.el, he), null === (i = t.el) || void 0 === i || i.removeAttribute("aria-labelledby"));
                 if (t || (t = this.getSlide()), !t || o && !this.isCurrentSlide(t)) return;
                 const r = t.el;
                 let l = this.optionFor(t, "caption", "");
@@ -28451,16 +28437,16 @@
                     if (c = t.captionEl || null, r && !c) {
                         const e = n + `_${this.id}_${t.index}`;
                         c = document.createElement("div"), P(c, n), c.setAttribute("id", e), t.captionEl = r.appendChild(c), 
-                        P(r, de), r.setAttribute("aria-labelledby", e);
+                        P(r, he), r.setAttribute("aria-labelledby", e);
                     }
                 } else {
                     if (c = this.caption, c || (c = s.querySelector("." + n)), !c) {
                         c = document.createElement("div"), c.dataset.fancyboxCaption = "", P(c, n);
                         (this.footer || s).prepend(c);
                     }
-                    P(s, de), this.caption = c;
+                    P(s, he), this.caption = c;
                 }
-                c && (c.innerHTML = "", ve(l) || "number" == typeof l ? c.innerHTML = l + "" : l instanceof HTMLElement && c.appendChild(l));
+                c && (c.innerHTML = "", me(l) || "number" == typeof l ? c.innerHTML = l + "" : l instanceof HTMLElement && c.appendChild(l));
             }
             checkFocus(t) {
                 this.focus(t);
@@ -28471,10 +28457,10 @@
                 const i = document.activeElement || null, n = (null == t ? void 0 : t.target) || null, s = this.container, o = null === (e = this.carousel) || void 0 === e ? void 0 : e.viewport;
                 if (!s || !o) return;
                 if (!t && i && s.contains(i)) return;
-                const a = this.getSlide(), r = a && a.state === lt.Ready ? a.el : null;
+                const a = this.getSlide(), r = a && a.state === rt.Ready ? a.el : null;
                 if (!r || r.contains(i) || s === i) return;
                 t && t.cancelable && t.preventDefault(), this.ignoreFocusChange = !0;
-                const l = Array.from(s.querySelectorAll(nt));
+                const l = Array.from(s.querySelectorAll(it));
                 let c = [], h = null;
                 for (let t of l) {
                     const e = !t.offsetParent || !!t.closest('[aria-hidden="true"]'), i = r && r.contains(t), n = !o.contains(t);
@@ -28489,8 +28475,8 @@
                     }
                 }
                 let d = null;
-                t ? (!n || c.indexOf(n) < 0) && (d = h || s, c.length && (i === xe ? d = c[0] : this.lastFocus !== s && i !== we || (d = c[c.length - 1]))) : d = a && "image" === a.type ? s : h || s, 
-                d && st(d), this.lastFocus = document.activeElement, this.ignoreFocusChange = !1;
+                t ? (!n || c.indexOf(n) < 0) && (d = h || s, c.length && (i === we ? d = c[0] : this.lastFocus !== s && i !== ye || (d = c[c.length - 1]))) : d = a && "image" === a.type ? s : h || s, 
+                d && nt(d), this.lastFocus = document.activeElement, this.ignoreFocusChange = !1;
             }
             next() {
                 const t = this.carousel;
@@ -28505,7 +28491,7 @@
             }
             isTopmost() {
                 var t;
-                return (null === (t = Oe.getInstance()) || void 0 === t ? void 0 : t.id) == this.id;
+                return (null === (t = Ce.getInstance()) || void 0 === t ? void 0 : t.id) == this.id;
             }
             animate(t = null, e = "", i) {
                 if (!t || !e) return void (i && i());
@@ -28534,22 +28520,22 @@
                     t.appendChild(o), o = t;
                 }
                 E(o) && t.filter && !t.error && (o = o.querySelector(t.filter)), o && E(o) ? (P(o, "fancybox__content"), 
-                t.id && o.setAttribute("id", t.id), s.classList.add(`has-${t.error ? "error" : t.type || "unknown"}`), 
-                s.prepend(o), "none" === o.style.display && (o.style.display = ""), "none" === getComputedStyle(o).getPropertyValue("display") && (o.style.display = t.display || this.option("defaultDisplay") || "flex"), 
+                t.id && o.setAttribute("id", t.id), "none" !== o.style.display && "none" !== getComputedStyle(o).getPropertyValue("display") || (o.style.display = t.display || this.option("defaultDisplay") || "flex"), 
+                s.classList.add(`has-${t.error ? "error" : t.type || "unknown"}`), s.prepend(o), 
                 t.contentEl = o, i && this.revealContent(t), this.manageCloseBtn(t), this.manageCaption(t)) : this.setError(t, "{{ELEMENT_NOT_FOUND}}");
             }
             revealContent(t, e) {
                 const i = t.el, n = t.contentEl;
-                i && n && (this.emit("reveal", t), this.hideLoading(t), t.state = lt.Opening, (e = this.isOpeningSlide(t) ? void 0 === e ? this.optionFor(t, "showClass") : e : "f-fadeIn") ? this.animate(n, e, (() => {
+                i && n && (this.emit("reveal", t), this.hideLoading(t), t.state = rt.Opening, (e = this.isOpeningSlide(t) ? void 0 === e ? this.optionFor(t, "showClass") : e : "f-fadeIn") ? this.animate(n, e, (() => {
                     this.done(t);
                 })) : this.done(t));
             }
             done(t) {
-                this.isClosing() || (t.state = lt.Ready, this.emit("done", t), P(t.el, "is-done"), 
+                this.isClosing() || (t.state = rt.Ready, this.emit("done", t), P(t.el, "is-done"), 
                 this.isCurrentSlide(t) && this.option("autoFocus") && queueMicrotask((() => {
                     var e;
                     null === (e = t.panzoom) || void 0 === e || e.updateControls(), this.option("autoFocus") && this.focus();
-                })), this.isOpeningSlide(t) && (S(this.container, he), !this.isCompact && this.option("idle") && this.setIdle()));
+                })), this.isOpeningSlide(t) && (S(this.container, ce), !this.isCompact && this.option("idle") && this.setIdle()));
             }
             isCurrentSlide(t) {
                 const e = this.getSlide();
@@ -28560,11 +28546,11 @@
                 return null === (null === (e = this.carousel) || void 0 === e ? void 0 : e.prevPage) && t && t.index === (null === (i = this.getSlide()) || void 0 === i ? void 0 : i.index);
             }
             showLoading(t) {
-                t.state = lt.Loading;
+                t.state = rt.Loading;
                 const e = t.el;
                 if (!e) return;
-                P(e, ce), this.emit("loading", t), t.spinnerEl || setTimeout((() => {
-                    if (!this.isClosing() && !t.spinnerEl && t.state === lt.Loading) {
+                P(e, le), this.emit("loading", t), t.spinnerEl || setTimeout((() => {
+                    if (!this.isClosing() && !t.spinnerEl && t.state === rt.Loading) {
                         let i = n(x);
                         P(i, "fancybox-spinner"), t.spinnerEl = i, e.prepend(i), this.animate(i, "f-fadeIn");
                     }
@@ -28574,9 +28560,9 @@
                 const e = t.el;
                 if (!e) return;
                 const i = t.spinnerEl;
-                this.isClosing() ? null == i || i.remove() : (S(e, ce), i && this.animate(i, "f-fadeOut", (() => {
+                this.isClosing() ? null == i || i.remove() : (S(e, le), i && this.animate(i, "f-fadeOut", (() => {
                     i.remove();
-                })), t.state === lt.Loading && (this.emit("loaded", t), t.state = lt.Ready));
+                })), t.state === rt.Loading && (this.emit("loaded", t), t.state = rt.Ready));
             }
             setError(t, e) {
                 if (this.isClosing()) return;
@@ -28614,7 +28600,7 @@
                 const n = () => {
                     this.proceedClose(t, e);
                 };
-                this.startedFs && ye && ye.isFullscreen() ? Promise.resolve(ye.exit()).then((() => n())) : n();
+                this.startedFs && be && be.isFullscreen() ? Promise.resolve(be.exit()).then((() => n())) : n();
             }
             clearIdle() {
                 this.idleTimer && clearTimeout(this.idleTimer), this.idleTimer = null;
@@ -28639,30 +28625,29 @@
                 this.idle ? this.endIdle() : this.setIdle(!0);
             }
             toggleFullscreen() {
-                ye && (ye.isFullscreen() ? ye.exit() : ye.request().then((() => {
+                be && (be.isFullscreen() ? be.exit() : be.request().then((() => {
                     this.startedFs = !0;
                 })));
             }
             isClosing() {
-                return [ rt.Closing, rt.CustomClosing, rt.Destroy ].includes(this.state);
+                return [ at.Closing, at.CustomClosing, at.Destroy ].includes(this.state);
             }
             proceedClose(t, e) {
                 var i, n;
-                this.state = rt.Closing, this.clearIdle(), this.detachEvents();
+                this.state = at.Closing, this.clearIdle(), this.detachEvents();
                 const s = this.container, o = this.carousel, a = this.getSlide(), r = a && this.option("placeFocusBack") ? a.triggerEl || this.option("triggerEl") : null;
-                if (r && (tt(r) ? st(r) : r.focus()), s && (S(s, he), P(s, "is-closing"), s.setAttribute(oe, "true"), 
-                this.option("animated") && P(s, re), s.style.pointerEvents = "none"), o) {
+                if (r && (Q(r) ? nt(r) : r.focus()), s && (S(s, ce), P(s, "is-closing"), s.setAttribute(se, "true"), 
+                this.option("animated") && P(s, ae), s.style.pointerEvents = "none"), o) {
                     o.clearTransitions(), null === (i = o.panzoom) || void 0 === i || i.destroy(), null === (n = o.plugins.Navigation) || void 0 === n || n.detach();
                     for (const t of o.slides) {
-                        t.state = lt.Closing, this.hideLoading(t);
+                        t.state = rt.Closing, this.hideLoading(t);
                         const e = t.contentEl;
                         e && this.stop(e);
                         const i = null == t ? void 0 : t.panzoom;
                         i && (i.stop(), i.detachEvents(), i.detachObserver()), this.isCurrentSlide(t) || o.emit("removeSlide", t);
                     }
                 }
-                Pe = window.scrollX, Ce = window.scrollY, window.addEventListener("scroll", this.onScroll), 
-                this.emit("close", t), this.state !== rt.CustomClosing ? (void 0 === e && a && (e = this.optionFor(a, "hideClass")), 
+                this.emit("close", t), this.state !== at.CustomClosing ? (void 0 === e && a && (e = this.optionFor(a, "hideClass")), 
                 e && a ? (this.animate(a.contentEl, e, (() => {
                     o && o.emit("removeSlide", a);
                 })), setTimeout((() => {
@@ -28673,38 +28658,38 @@
             }
             destroy() {
                 var t;
-                if (this.state === rt.Destroy) return;
-                window.removeEventListener("scroll", this.onScroll), this.state = rt.Destroy, null === (t = this.carousel) || void 0 === t || t.destroy();
+                if (this.state === at.Destroy) return;
+                this.state = at.Destroy, null === (t = this.carousel) || void 0 === t || t.destroy();
                 const e = this.container;
-                e && e.remove(), Te.delete(this.id);
-                const i = Oe.getInstance();
-                i ? i.focus() : (we && (we.remove(), we = null), xe && (xe.remove(), xe = null), 
-                S(document.documentElement, ee), (() => {
-                    if (!et) return;
+                e && e.remove(), Se.delete(this.id);
+                const i = Ce.getInstance();
+                i ? i.focus() : (ye && (ye.remove(), ye = null), we && (we.remove(), we = null), 
+                S(document.documentElement, te), (() => {
+                    if (!tt) return;
                     const t = document, e = t.body;
-                    e.classList.remove(ie), e.style.setProperty(se, ""), t.documentElement.style.setProperty(ne, "");
+                    e.classList.remove(ee), e.style.setProperty(ne, ""), t.documentElement.style.setProperty(ie, "");
                 })(), this.emit("destroy"));
             }
             static bind(t, e, i) {
-                if (!et) return;
+                if (!tt) return;
                 let n, s = "", o = {};
-                if (void 0 === t ? n = document.body : ve(t) ? (n = document.body, s = t, "object" == typeof e && (o = e || {})) : (n = t, 
-                ve(e) && (s = e), "object" == typeof i && (o = i || {})), !n || !E(n)) return;
+                if (void 0 === t ? n = document.body : me(t) ? (n = document.body, s = t, "object" == typeof e && (o = e || {})) : (n = t, 
+                me(e) && (s = e), "object" == typeof i && (o = i || {})), !n || !E(n)) return;
                 s = s || "[data-fancybox]";
-                const a = Oe.openers.get(n) || new Map;
-                a.set(s, o), Oe.openers.set(n, a), 1 === a.size && n.addEventListener("click", Oe.fromEvent);
+                const a = Ce.openers.get(n) || new Map;
+                a.set(s, o), Ce.openers.set(n, a), 1 === a.size && n.addEventListener("click", Ce.fromEvent);
             }
             static unbind(t, e) {
                 let i, n = "";
-                if (ve(t) ? (i = document.body, n = t) : (i = t, ve(e) && (n = e)), !i) return;
-                const s = Oe.openers.get(i);
-                s && n && s.delete(n), n && s || (Oe.openers.delete(i), i.removeEventListener("click", Oe.fromEvent));
+                if (me(t) ? (i = document.body, n = t) : (i = t, me(e) && (n = e)), !i) return;
+                const s = Ce.openers.get(i);
+                s && n && s.delete(n), n && s || (Ce.openers.delete(i), i.removeEventListener("click", Ce.fromEvent));
             }
             static destroy() {
                 let t;
-                for (;t = Oe.getInstance(); ) t.destroy();
-                for (const t of Oe.openers.keys()) t.removeEventListener("click", Oe.fromEvent);
-                Oe.openers = new Map;
+                for (;t = Ce.getInstance(); ) t.destroy();
+                for (const t of Ce.openers.keys()) t.removeEventListener("click", Ce.fromEvent);
+                Ce.openers = new Map;
             }
             static fromEvent(t) {
                 if (t.defaultPrevented) return;
@@ -28718,38 +28703,38 @@
                 }
                 if (!(e && e instanceof Element)) return;
                 let n, s, o, a;
-                if ([ ...Oe.openers ].reverse().find((([t, i]) => !(!t.contains(e) || ![ ...i ].reverse().find((([i, r]) => {
+                if ([ ...Ce.openers ].reverse().find((([t, i]) => !(!t.contains(e) || ![ ...i ].reverse().find((([i, r]) => {
                     let l = e.closest(i);
                     return !!l && (n = t, s = i, o = l, a = r, !0);
                 }))))), !n || !s || !o) return;
                 a = a || {}, t.preventDefault(), e = o;
-                let r = [], l = u({}, at, a);
+                let r = [], l = u({}, ot, a);
                 l.event = t, l.triggerEl = e, l.delegate = i;
                 const c = l.groupAll, h = l.groupAttr, d = h && e ? e.getAttribute(`${h}`) : "";
                 if ((!e || d || c) && (r = [].slice.call(n.querySelectorAll(s))), e && !c && (r = d ? r.filter((t => t.getAttribute(`${h}`) === d)) : [ e ]), 
                 !r.length) return;
-                const p = Oe.getInstance();
+                const p = Ce.getInstance();
                 return p && p.options.triggerEl && r.indexOf(p.options.triggerEl) > -1 ? void 0 : (e && (l.startIndex = r.indexOf(e)), 
-                Oe.fromNodes(r, l));
+                Ce.fromNodes(r, l));
             }
             static fromSelector(t, e, i) {
                 let n = null, s = "", o = {};
-                if (ve(t) ? (n = document.body, s = t, "object" == typeof e && (o = e || {})) : t instanceof HTMLElement && ve(e) && (n = t, 
+                if (me(t) ? (n = document.body, s = t, "object" == typeof e && (o = e || {})) : t instanceof HTMLElement && me(e) && (n = t, 
                 s = e, "object" == typeof i && (o = i || {})), !n || !s) return !1;
-                const a = Oe.openers.get(n);
-                return !!a && (o = u({}, a.get(s) || {}, o), !!o && Oe.fromNodes(Array.from(n.querySelectorAll(s)), o));
+                const a = Ce.openers.get(n);
+                return !!a && (o = u({}, a.get(s) || {}, o), !!o && Ce.fromNodes(Array.from(n.querySelectorAll(s)), o));
             }
             static fromNodes(t, e) {
-                e = u({}, at, e || {});
+                e = u({}, ot, e || {});
                 const i = [];
                 for (const n of t) {
-                    const t = n.dataset || {}, s = t[me] || n.getAttribute(ge) || n.getAttribute("currentSrc") || n.getAttribute(me) || void 0;
+                    const t = n.dataset || {}, s = t[ge] || n.getAttribute(fe) || n.getAttribute("currentSrc") || n.getAttribute(ge) || void 0;
                     let o;
                     const a = e.delegate;
                     let r;
                     a && i.length === e.startIndex && (o = a instanceof HTMLImageElement ? a : a.querySelector("img:not([aria-hidden])")), 
                     o || (o = n instanceof HTMLImageElement ? n : n.querySelector("img:not([aria-hidden])")), 
-                    o && (r = o.currentSrc || o[me] || void 0, !r && o.dataset && (r = o.dataset.lazySrc || o.dataset[me] || void 0));
+                    o && (r = o.currentSrc || o[ge] || void 0, !r && o.dataset && (r = o.dataset.lazySrc || o.dataset[ge] || void 0));
                     const l = {
                         src: s,
                         triggerEl: n,
@@ -28763,50 +28748,50 @@
                     }
                     i.push(l);
                 }
-                return new Oe(i, e);
+                return new Ce(i, e);
             }
             static getInstance(t) {
-                if (t) return Te.get(t);
-                return Array.from(Te.values()).reverse().find((t => !t.isClosing() && t)) || null;
+                if (t) return Se.get(t);
+                return Array.from(Se.values()).reverse().find((t => !t.isClosing() && t)) || null;
             }
             static getSlide() {
                 var t;
-                return (null === (t = Oe.getInstance()) || void 0 === t ? void 0 : t.getSlide()) || null;
+                return (null === (t = Ce.getInstance()) || void 0 === t ? void 0 : t.getSlide()) || null;
             }
             static show(t = [], e = {}) {
-                return new Oe(t, e);
+                return new Ce(t, e);
             }
             static next() {
-                const t = Oe.getInstance();
+                const t = Ce.getInstance();
                 t && t.next();
             }
             static prev() {
-                const t = Oe.getInstance();
+                const t = Ce.getInstance();
                 t && t.prev();
             }
             static close(t = !0, ...e) {
-                if (t) for (const t of Te.values()) t.close(...e); else {
-                    const t = Oe.getInstance();
+                if (t) for (const t of Se.values()) t.close(...e); else {
+                    const t = Ce.getInstance();
                     t && t.close(...e);
                 }
             }
         }
-        Object.defineProperty(Oe, "version", {
+        Object.defineProperty(Ce, "version", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: "5.0.36"
-        }), Object.defineProperty(Oe, "defaults", {
+            value: "5.0.33"
+        }), Object.defineProperty(Ce, "defaults", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: at
-        }), Object.defineProperty(Oe, "Plugins", {
+            value: ot
+        }), Object.defineProperty(Ce, "Plugins", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
-            value: te
-        }), Object.defineProperty(Oe, "openers", {
+            value: Qt
+        }), Object.defineProperty(Ce, "openers", {
             enumerable: !0,
             configurable: !0,
             writable: !0,
@@ -28815,7 +28800,7 @@
         var air_datepicker = __webpack_require__(792);
         var air_datepicker_default = __webpack_require__.n(air_datepicker);
         const index_es = air_datepicker_default();
-        Oe.bind("[data-fancybox]", {});
+        Ce.bind("[data-fancybox]", {});
         window.addEventListener("DOMContentLoaded", (() => {
             var idItemListLk;
             document.addEventListener("click", documentActions);
@@ -29393,14 +29378,7 @@
                 tabs02 ? tabs02.classList.add("_tab-active") : null;
             }
             const breadcrumbs = document.querySelector(".breadcrumbs__list");
-            if (breadcrumbs) {
-                console.log(breadcrumbs.clientWidth);
-                console.log(window.innerWidth);
-                if (30 + breadcrumbs.clientWidth > window.innerWidth) {
-                    breadcrumbs.classList.add("_align-right");
-                    breadcrumbs.parentElement.classList.add("_breadcrumbs-swipe");
-                }
-            }
+            if (breadcrumbs) if (30 + breadcrumbs.clientWidth > window.innerWidth) ;
             const searchMob = document.querySelector(".search-mob");
             const headerDropMobile = searchMob.querySelector(".dropmenu");
             headerDropMobile.style.top = `${searchMob.clientHeight}` + "px";

@@ -3117,33 +3117,22 @@ h3[class*=__title] {
   margin-top: 10px;
   margin-bottom: 20px;
   position: relative;
-}
-
-.breadcrumbs._breadcrumbs-swipe {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
 }
 
 .breadcrumbs__list {
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
-}
-
-.breadcrumbs__list._align-right {
-  position: relative;
-  overflow: hidden;
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-.breadcrumbs__list._align-right::-webkit-scrollbar {
+.breadcrumbs__list::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -3647,17 +3636,6 @@ input[type=number] {
 .header__menu {
   position: relative;
   z-index: 3;
-}
-
-.header__menu::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 10000vw;
-  height: 100%;
-  left: -1000%;
-  background: #bf5c7a;
-  z-index: -1;
 }
 
 .top-header__item {
@@ -7328,11 +7306,6 @@ input[type=number] {
   grid-template-columns: 74.675325% 1fr;
 }
 
-.basket__content section:not(:last-child),
-.order__content section:not(:last-child) {
-  margin-bottom: 2.5rem;
-}
-
 .cart__main {
   margin-bottom: 40px;
 }
@@ -10709,7 +10682,7 @@ div.castom[class] .air-datepicker-nav--action[data-action^=next]::after {
   gap: 40px;
 }
 
-.tabs-sertification__title:not(:last-child) {
+.tabs-sertification__title[class]:not(:last-child) {
   margin-right: 0;
 }
 
@@ -13513,13 +13486,6 @@ html.with-fancybox body.hide-scrollbar {
   margin: auto;
 }
 
-.fancybox__backdrop:empty,
-.fancybox__viewport:empty,
-.fancybox__track:empty,
-.fancybox__slide:empty {
-  display: block;
-}
-
 .fancybox__content {
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
@@ -13594,8 +13560,15 @@ html.with-fancybox body.hide-scrollbar {
   max-height: 100%;
 }
 
+.is-zooming-in .fancybox__viewport:not(.is-dragging) .fancybox__slide:not(.is-selected) .fancybox__content,
+.is-zooming-out .fancybox__viewport:not(.is-dragging) .fancybox__slide:not(.is-selected) .fancybox__content {
+  visibility: hidden;
+}
+
 .is-animating .fancybox__content,
 .is-dragging .fancybox__content {
+  -webkit-filter: blur(0px);
+          filter: blur(0px);
   will-change: transform, width, height;
 }
 
@@ -13611,8 +13584,6 @@ html.with-fancybox body.hide-scrollbar {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  -webkit-filter: blur(0px);
-          filter: blur(0px);
 }
 
 .fancybox__caption {
@@ -15832,6 +15803,18 @@ html.with-fancybox body.hide-scrollbar {
             column-gap: 20px;
   }
 
+  .header__menu {
+    margin-inline: -15px;
+  }
+
+  .header__menu::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #bf5c7a;
+    z-index: -1;
+  }
+
   .header-center__button .img-search45x45 {
     scale: 0.7;
     translate: 10px;
@@ -15995,6 +15978,11 @@ html.with-fancybox body.hide-scrollbar {
 
   .device .feedback__spoller-arrow {
     display: none;
+  }
+
+  .basket__content section:not(:last-child),
+  .order__content section:not(:last-child) {
+    margin-bottom: 2.5rem;
   }
 
   .list-cart__item-close {
@@ -17303,8 +17291,7 @@ html.with-fancybox body.hide-scrollbar {
 
   .menu__body {
     position: fixed;
-    width: 59%;
-    /* 590/1000 */
+    width: 60%;
     height: 100%;
     left: -100%;
     top: 0;
@@ -17319,8 +17306,8 @@ html.with-fancybox body.hide-scrollbar {
   .menu__body::before {
     content: "";
     position: fixed;
-    width: 59%;
-    height: 4.375rem;
+    width: 60%;
+    height: 20px;
     left: -100%;
     top: 0;
     -webkit-transition: left 0.2s;
@@ -19194,13 +19181,11 @@ html.with-fancybox body.hide-scrollbar {
 
 @media (max-width: 62.62375em) and (max-width: 47.99875em) {
   .menu__body {
-    width: 92.447917%;
-    /* 710/768 */
+    width: 90%;
   }
 
   .menu__body::before {
-    width: 92.447917%;
-    /* 710/768 */
+    width: 90%;
   }
 
   .about-store__main:not(:last-child) {
@@ -21084,7 +21069,7 @@ html.with-fancybox body.hide-scrollbar {
     row-gap: 50px;
   }
 
-  .tabs-sertification__title {
+  .tabs-sertification__title[class] {
     text-align: left;
   }
 
@@ -30054,9 +30039,9 @@ html.with-fancybox body.hide-scrollbar {
     margin-bottom: 40px;
   }
 
-  .basket__content section:not(:last-child),
-  .order__content section:not(:last-child) {
-    margin-bottom: 3.75rem;
+  .basket__content section,
+  .order__content section {
+    margin-bottom: 60px;
   }
 }
 
